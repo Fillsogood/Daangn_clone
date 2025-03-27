@@ -2,11 +2,11 @@ name: Backend CI
 
 on:
   push:
-    branches: [main, develop] 
+    branches: [main, develop]
     paths:
       - "backend/**"
   pull_request:
-    branches: [main, develop] 
+    branches: [main, develop]
     paths:
       - "backend/**"
 
@@ -29,8 +29,11 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Lint Check (ESLint)
-        run: npx eslint . --ext .js
+      - name: Lint Check (ESLint + TS)
+        run: npx eslint . --ext .ts,.tsx
+
+      # - name: Type Check (optional)
+      #   run: npx tsc --noEmit
 
       # - name: Test (Jest or Supertest)
       #   run: npm test

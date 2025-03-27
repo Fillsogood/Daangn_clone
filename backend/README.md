@@ -15,6 +15,20 @@ npm install express cors dotenv
 npm install -D nodemon
 
 npm install -D eslint prettier eslint-config-prettier
+
+npm install -D typescript ts-node @types/node
+npm install -D nodemon @types/express
+npm install express
+
+npm install @prisma/client
+npx prisma init
+npx prisma generate
+
+# Prisma 명령 실행 기능
+npx prisma generate
+npx prisma migrate dev --name init
+npx prisma studio
+
 ```
 
 ## 개발 도구
