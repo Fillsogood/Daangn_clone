@@ -1,0 +1,40 @@
+# Node.js (frontend + backend 공통)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 환경변수 파일
+*.env
+
+# 운영 시스템 파일
+.DS_Store
+Thumbs.db
+
+# 로그 파일
+*.log
+logs/
+debug.log
+
+# VSCode
+.vscode/
+
+# 백엔드 빌드 결과 (혹시 사용한다면)
+dist/
+build/
+
+# 프론트엔드 빌드 결과
+frontend/build/
+
+# 프론트엔드 캐시/잠금파일
+frontend/.next/
+frontend/.cache/
+frontend/.turbo/
+frontend/.eslintcache
+
+# 백엔드 캐시/잠금파일
+backend/.eslintcache
+
+# Database 백업 파일 예외 (예: dump.sql 같은 거)
+database/*.dump
