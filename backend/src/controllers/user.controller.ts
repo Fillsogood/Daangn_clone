@@ -1,25 +1,14 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middlewares/auth.middleware';
-import prisma from '../config/prisma';
+import * as userService from '../services/user.service';
 
 export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.userId },
-      select: {
-        id: true,
-        email: true,
-        nickname: true,
-        region: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        createdAt: true,
-      },
-    });
-
+    if (req.userId === undefined) {
+      res.status(400).json({ error: '사용자 ID가 필요합니다.' });
+      return;
+    }
+    const user = await userService.getUserById(req.userId);
     if (!user) {
       res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
       return;
