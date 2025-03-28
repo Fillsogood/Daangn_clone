@@ -41,6 +41,34 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+// 로그아웃
+export const logout = async (req: Request, res: Response): Promise<void> => {
+  const token = req.cookies?.refreshToken;
+
+  if (!token) {
+    res.status(200).json({ message: '이미 로그아웃 상태입니다.' });
+    return;
+  }
+
+  try {
+    // Refresh Token을 가진 사용자 찾기
+    // DB에서 토큰 제거
+    await prisma.user.update({
+      where: { id: verify<{ userId: number }>(token).userId },
+      data: { refreshToken: null },
+    });
+
+    // 쿠키 제거
+    res
+      .clearCookie('token')
+      .clearCookie('refreshToken', { path: '/auth/refresh' })
+      .status(200)
+      .json({ message: '로그아웃 되었습니다.' });
+  } catch {
+    res.status(400).json({ error: '잘못된 요청입니다.' });
+  }
+};
+
 // 내 토큰 유효 검사
 export const me = async (req: AuthRequest, res: Response): Promise<void> => {
   try {

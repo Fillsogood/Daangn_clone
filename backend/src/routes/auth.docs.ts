@@ -114,3 +114,29 @@
  *       403:
  *         description: Refresh Token이 유효하지 않음 (DB 불일치 등)
  */
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: 로그아웃
+ *     tags: [Auth]
+ *     description: 서버에 저장된 Refresh Token을 제거하고, 클라이언트의 인증 쿠키를 삭제합니다.
+ *     requestBody:
+ *       required: false
+ *     responses:
+ *       200:
+ *         description: 로그아웃 성공 (토큰 및 쿠키 삭제됨)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 로그아웃 되었습니다.
+ *       400:
+ *         description: 잘못된 요청
+ *       401:
+ *         description: 유효하지 않은 또는 만료된 토큰
+ */
