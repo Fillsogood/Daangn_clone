@@ -1,18 +1,7 @@
 import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import { signRefreshToken, signToken } from '../utils/jwt';
-
-interface SignupInput {
-  email: string;
-  password: string;
-  nickname: string;
-  regionId: number;
-}
-
-interface LoginInput {
-  email: string;
-  password: string;
-}
+import { SignupInput, LoginInput } from '../types/auth.types';
 
 export const signup = async (input: SignupInput) => {
   const { email, password, nickname, regionId } = input;
