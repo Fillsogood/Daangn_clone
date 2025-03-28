@@ -1,6 +1,6 @@
 import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
-import { signToken } from '../utils/jwt';
+import { signRefreshToken, signToken } from '../utils/jwt';
 
 interface SignupInput {
   email: string;
@@ -53,8 +53,15 @@ export const login = async (input: LoginInput) => {
   }
 
   const token = signToken({ userId: user.id });
+  const refreshToken = signRefreshToken({ userId: user.id });
 
+  // DB에 저장
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { refreshToken },
+  });
   return {
     token,
+    refreshToken,
   };
 };

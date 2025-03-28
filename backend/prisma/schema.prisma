@@ -13,6 +13,7 @@ model User {
   password     String?          // 일반 로그인만 해당
   nickname     String
   regionId     Int
+  refreshToken String?
   region       Region           @relation(fields: [regionId], references: [id])
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
