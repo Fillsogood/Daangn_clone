@@ -47,3 +47,41 @@
  *       500:
  *         description: 서버 오류
  */
+
+/**
+ * @swagger
+ * /api/users/me:
+ *   patch:
+ *     summary: 내 정보 수정
+ *     tags: [User]
+ *     description: 사용자 정보를 수정합니다. (닉네임, 이메일, 지역, 프로필 이미지)
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nickname:
+ *                 type: string
+ *                 example: 새로운 닉네임
+ *               email:
+ *                 type: string
+ *                 example: newemail@example.com
+ *               regionId:
+ *                 type: integer
+ *                 example: 5
+ *     responses:
+ *       200:
+ *         description: 수정 성공
+ *       400:
+ *         description: 잘못된 요청
+ *       401:
+ *         description: 인증 실패
+ *       404:
+ *         description: 사용자를 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
+ */
