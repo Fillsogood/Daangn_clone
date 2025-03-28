@@ -17,7 +17,7 @@ app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // 🔗 Auth API 라우터 연결
-app.use('/auth', authRouter);
+app.use('/api/auth', authRouter);
 
 // 기본 라우트
 app.get('/', (req, res) => {
