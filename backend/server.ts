@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './src/config/swagger';
 import authRouter from './src/routes/auth.route';
 import userRouter from './src/routes/user.route';
+import regionRouter from './src/routes/region.route';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // 🔗 Auth API 라우터 연결
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
+app.use('/api/regions', regionRouter);
 
 // 기본 라우트
 app.get('/', (req, res) => {
