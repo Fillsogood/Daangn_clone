@@ -29,7 +29,7 @@ export const signup = async (input: SignupInput) => {
 
   const hashed = await bcrypt.hash(password, 10);
 
-  const user = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email,
       password: hashed,
@@ -37,12 +37,6 @@ export const signup = async (input: SignupInput) => {
       regionId,
     },
   });
-
-  return {
-    id: user.id,
-    email: user.email,
-    nickname: user.nickname,
-  };
 };
 
 export const login = async (input: LoginInput) => {

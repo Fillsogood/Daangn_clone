@@ -3,6 +3,7 @@ import * as authService from '../services/auth.service';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import prisma from '../config/prisma';
 
+// 회원가입
 export const signup = async (req: Request, res: Response) => {
   try {
     const result = await authService.signup(req.body);
@@ -12,15 +13,28 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
+// JWT 토큰 로그인(cookie & json)
 export const login = async (req: Request, res: Response) => {
   try {
     const result = await authService.login(req.body);
-    res.status(200).json({ message: '로그인 성공', ...result });
+
+    res
+      .cookie('token', result.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 60,
+      })
+      .status(200)
+      .json({ message: '로그인 성공', ...result });
   } catch (err) {
-    res.status(401).json({ error: err instanceof Error ? err.message : '로그인 실패' });
+    res.status(401).json({
+      error: err instanceof Error ? err.message : '로그인 실패',
+    });
   }
 };
 
+// 내 토큰 유효 검사
 export const me = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const user = await prisma.user.findUnique({
