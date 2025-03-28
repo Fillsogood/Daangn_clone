@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /auth/signup:
+ * /api/auth/signup:
  *   post:
  *     summary: 회원가입
  *     tags: [Auth]
@@ -33,7 +33,7 @@
 
 /**
  * @swagger
- * /auth/login:
+ * /api/auth/login:
  *   post:
  *     summary: 로그인
  *     tags: [Auth]
@@ -60,7 +60,7 @@
 
 /**
  * @swagger
- * /auth/me:
+ * /api/auth/me:
  *   get:
  *     summary: 내 정보 조회
  *     tags: [Auth]
@@ -87,4 +87,30 @@
  *                       type: integer
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ */
+
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Access Token 재발급
+ *     tags: [Auth]
+ *     description: 클라이언트는 쿠키에 담긴 Refresh Token을 전송하여 새로운 Access Token을 발급받습니다.
+ *     requestBody:
+ *       required: false
+ *     responses:
+ *       200:
+ *         description: 토큰 재발급 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 토큰이 재발급되었습니다.
+ *       401:
+ *         description: 유효하지 않은 Refresh Token
+ *       403:
+ *         description: Refresh Token이 유효하지 않음 (DB 불일치 등)
  */

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import * as authService from '../services/auth.service';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import prisma from '../config/prisma';
+import { signToken, signRefreshToken, verify } from '../utils/jwt';
 
 // 회원가입
 export const signup = async (req: Request, res: Response) => {
@@ -24,6 +25,12 @@ export const login = async (req: Request, res: Response) => {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         maxAge: 1000 * 60 * 60,
+      })
+      .cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
       })
       .status(200)
       .json({ message: '로그인 성공', ...result });
@@ -50,5 +57,58 @@ export const me = async (req: AuthRequest, res: Response): Promise<void> => {
     res.status(200).json({ user });
   } catch {
     res.status(500).json({ error: '내 정보 조회 실패' });
+  }
+};
+
+// 토큰 재발급
+export const refresh = async (req: Request, res: Response): Promise<void> => {
+  const token = req.cookies?.refreshToken;
+
+  // 토큰이 들어있는지 검증
+  if (!token) {
+    res.status(401).json({ error: 'Refresh Token이 없습니다.' });
+    return;
+  }
+
+  // DB에 저장된 Refresh Token 검증
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: verify<{ userId: number }>(token).userId },
+    });
+
+    if (!user || user.refreshToken !== token) {
+      res.status(403).json({ error: 'Refresh Token이 유효하지 않습니다.' });
+      return;
+    }
+
+    // 새 토큰 발급
+    const newAccessToken = signToken({ userId: user.id });
+    const newRefreshToken = signRefreshToken({ userId: user.id });
+
+    // Refresh Token 갱신
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken: newRefreshToken },
+    });
+
+    // 쿠키로 다시 전송
+    res
+      .cookie('token', newAccessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 15, // 15분
+      })
+      .cookie('refreshToken', newRefreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
+        path: '/auth/refresh',
+      })
+      .status(200)
+      .json({ message: '토큰이 재발급되었습니다.' });
+  } catch {
+    res.status(401).json({ error: '유효하지 않은 Refresh Token입니다.' });
   }
 };
