@@ -17,7 +17,7 @@ model User {
   region       Region           @relation(fields: [regionId], references: [id])
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
-  socialLinks  SocialAccount[]  // 연결된 소셜 계정들
+  socialAccounts  SocialAccount[]  // 연결된 소셜 계정들
   posts        Post[]
   likes        Like[]
   messages     ChatMessage[]
