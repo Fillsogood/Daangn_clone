@@ -9,7 +9,3 @@ export const signToken = (payload: object) => {
   };
   return jwt.sign(payload, secret, options);
 };
-
-export const verifyToken = (token: string) => {
-  return jwt.verify(token, secret);
-};

@@ -22,9 +22,9 @@ export const signup = async (input: SignupInput) => {
     throw new Error('이미 존재하는 이메일입니다.');
   }
 
-  const region = await prisma.region.findUnique({where:{id: regionId}});
-  if(!region){
-    throw new Error("존재하지 않는 지역입니다.")
+  const region = await prisma.region.findUnique({ where: { id: regionId } });
+  if (!region) {
+    throw new Error('존재하지 않는 지역입니다.');
   }
 
   const hashed = await bcrypt.hash(password, 10);
