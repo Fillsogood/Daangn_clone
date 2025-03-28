@@ -143,7 +143,7 @@
 
 /**
  * @swagger
- * /auth/kakao:
+ * /api/auth/kakao:
  *   get:
  *     summary: 카카오 로그인 시작
  *     tags: [Auth]
@@ -152,7 +152,7 @@
  *       302:
  *         description: 카카오 로그인 페이지로 리디렉션
  *
- * /auth/kakao/callback:
+ * /api/auth/kakao/callback:
  *   get:
  *     summary: 카카오 로그인 콜백
  *     tags: [Auth]

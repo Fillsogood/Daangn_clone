@@ -164,7 +164,7 @@ export const kakaoLogin = (req: Request, res: Response) => {
 export const kakaoCallback = async (req: Request, res: Response) => {
   const code = req.query.code as string;
 
-// 인가 코드로 카카오에 Access Token 요청
+  // 인가 코드로 카카오에 Access Token 요청
   const tokenRes = await axios.post('https://kauth.kakao.com/oauth/token', null, {
     params: {
       grant_type: 'authorization_code',
@@ -181,8 +181,8 @@ export const kakaoCallback = async (req: Request, res: Response) => {
   const userRes = await axios.get('https://kapi.kakao.com/v2/user/me', {
     headers: { Authorization: `Bearer ${kakaoAccessToken}` },
   });
-  
-  // 사용자 정보 추출 
+
+  // 사용자 정보 추출
   const kakaoUser = userRes.data;
   const kakaoId = kakaoUser.id;
   const nickname = kakaoUser.properties.nickname;
