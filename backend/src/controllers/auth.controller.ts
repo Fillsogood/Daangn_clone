@@ -103,9 +103,21 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
     const user = await prisma.user.findUnique({
       where: { id: verify<{ userId: number }>(token).userId },
     });
-
+    // 재사용 감지 + 방지 로직
     if (!user || user.refreshToken !== token) {
-      res.status(403).json({ error: 'Refresh Token이 유효하지 않습니다.' });
+      if (user) {
+        // DB 토큰 강제 제거 (세션 무효화)
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { refreshToken: null },
+        });
+      }
+
+      res
+        .clearCookie('token')
+        .clearCookie('refreshToken', { path: '/auth/refresh' })
+        .status(403)
+        .json({ error: '재사용된 Refresh Token입니다. 보안을 위해 로그아웃됩니다.' });
       return;
     }
 
