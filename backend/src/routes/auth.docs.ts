@@ -140,3 +140,33 @@
  *       401:
  *         description: 유효하지 않은 또는 만료된 토큰
  */
+
+/**
+ * @swagger
+ * /auth/kakao:
+ *   get:
+ *     summary: 카카오 로그인 시작
+ *     tags: [Auth]
+ *     description: 카카오 로그인 인증 페이지로 리디렉션합니다.
+ *     responses:
+ *       302:
+ *         description: 카카오 로그인 페이지로 리디렉션
+ *
+ * /auth/kakao/callback:
+ *   get:
+ *     summary: 카카오 로그인 콜백
+ *     tags: [Auth]
+ *     description: 카카오 로그인 후, 사용자 정보를 확인하고 JWT를 발급합니다.
+ *     parameters:
+ *       - in: query
+ *         name: code
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 카카오에서 전달한 인가 코드
+ *     responses:
+ *       200:
+ *         description: 로그인 성공 후 프론트로 리디렉션
+ *       400:
+ *         description: 로그인 실패 또는 토큰 발급 실패
+ */
