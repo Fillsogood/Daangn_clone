@@ -102,3 +102,27 @@
  *       500:
  *         description: 서버 오류
  */
+
+/**
+ * @swagger
+ * /api/posts/{id}:
+ *   get:
+ *     summary: 게시글 상세 조회
+ *     tags: [Post]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: 게시글 ID
+ *     responses:
+ *       200:
+ *         description: 게시글 조회 성공
+ *       400:
+ *         description: 잘못된 요청
+ *       404:
+ *         description: 게시글 없음
+ *       500:
+ *         description: 서버 오류
+ */
