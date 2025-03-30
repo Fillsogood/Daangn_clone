@@ -98,3 +98,21 @@ export const updatePost = async (postId: number, userId: number, data: UpdatePos
 
   return updatedPost;
 };
+
+export const deletePost = async (postId: number, userId: number) => {
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+  });
+
+  if (!post || post.userId !== userId) {
+    throw new Error('권한이 없거나 게시글이 존재하지 않습니다.');
+  }
+
+  // 연결된 이미지 먼저 삭제
+  await prisma.postImage.deleteMany({ where: { postId } });
+
+  // 게시글 삭제
+  await prisma.post.delete({ where: { id: postId } });
+
+  return true;
+};
