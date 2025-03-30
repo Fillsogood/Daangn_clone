@@ -46,7 +46,7 @@ model Post {
   title     String
   content   String
   price     Int
-  images  PostImage[]
+  images    PostImage[]
   status    String   @default("selling")
   userId    Int
   user      User     @relation(fields: [userId], references: [id])

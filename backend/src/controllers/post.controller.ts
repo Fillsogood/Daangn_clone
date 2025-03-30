@@ -14,7 +14,7 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
     const post = await postService.createPost(req.userId, input);
 
     res.status(201).json({ message: '게시글 등록 성공', post });
-  } catch {
-    res.status(500).json({ error: '게시글 등록 중 오류 발생' });
+  } catch (err) {
+    res.status(500).json({ error: '게시글 등록 중 오류 발생', message: err });
   }
 };
