@@ -46,3 +46,17 @@ export const getPosts = async (query: GetPostsQuery) => {
 
   return posts;
 };
+
+export const getPostById = async (id: number) => {
+  return await prisma.post.findUnique({
+    where: { id },
+    include: {
+      user: {
+        select: { nickname: true },
+      },
+      images: {
+        select: { url: true },
+      },
+    },
+  });
+};
