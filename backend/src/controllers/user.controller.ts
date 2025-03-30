@@ -50,7 +50,7 @@ export const updateMe = async (req: AuthRequest, res: Response): Promise<void> =
       message: '회원 정보가 성공적으로 수정되었습니다.',
       user: updatedUser,
     });
-  } catch {
-    res.status(500).json({ error: '회원 정보 수정 중 오류가 발생했습니다.' });
+  } catch (err) {
+    res.status(500).json({ error: '회원 정보 수정 중 오류가 발생했습니다.', message: err });
   }
 };

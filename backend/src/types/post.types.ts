@@ -4,3 +4,8 @@ export interface CreatePostInput {
   price: number;
   images: string[];
 }
+
+export interface GetPostsQuery {
+  page?: number;
+  limit?: number;
+}

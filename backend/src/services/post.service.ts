@@ -1,5 +1,5 @@
 import prisma from '../config/prisma';
-import { CreatePostInput } from '../types/post.types';
+import { CreatePostInput, GetPostsQuery } from '../types/post.types';
 
 export const createPost = async (userId: number, input: CreatePostInput) => {
   const { title, content, price, images } = input;
@@ -20,4 +20,29 @@ export const createPost = async (userId: number, input: CreatePostInput) => {
   });
 
   return post;
+};
+
+export const getPosts = async (query: GetPostsQuery) => {
+  const page = query.page || 1;
+  const limit = query.limit || 10;
+  const skip = (page - 1) * limit;
+
+  const posts = await prisma.post.findMany({
+    skip,
+    take: limit,
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      user: {
+        select: { nickname: true },
+      },
+      images: {
+        take: 1, // 대표 이미지 1장만
+        select: { url: true },
+      },
+    },
+  });
+
+  return posts;
 };

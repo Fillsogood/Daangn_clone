@@ -77,3 +77,28 @@
  *       500:
  *         description: 서버 오류
  */
+
+/**
+ * @swagger
+ * /api/posts:
+ *   get:
+ *     summary: 게시글 목록 조회
+ *     tags: [Post]
+ *     description: 전체 게시글 목록을 최신순으로 조회합니다.
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: 페이지 번호 (기본값 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: 한 페이지당 게시글 수 (기본값 10)
+ *     responses:
+ *       200:
+ *         description: 게시글 목록 조회 성공
+ *       500:
+ *         description: 서버 오류
+ */
