@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { CreatePostInput, UpdatePostInput } from '../types/post.types';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import * as postService from '../services/post.service';
+import { getUserById } from '../services/user.service';
 
 // 게시물 작성
 export const createPost = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -86,5 +87,30 @@ export const deletePost = async (req: AuthRequest, res: Response): Promise<void>
     res.status(200).json({ message: '게시글이 삭제되었습니다.' });
   } catch (err) {
     res.status(403).json({ error: err instanceof Error ? err.message : '삭제 실패' });
+  }
+};
+
+// 지역 기반 게시글 목록 기능
+export const getPostsByUserRegion = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(401).json({ error: '로그인이 필요합니다.' });
+      return;
+    }
+
+    const page = req.query.page ? parseInt(req.query.page as string) : 1;
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+
+    const user = await getUserById(req.userId);
+
+    if (!user) {
+      res.status(404).json({ error: '사용자 정보를 찾을 수 없습니다.' });
+      return;
+    }
+
+    const posts = await postService.getPostsByRegion(user.region.id, page, limit);
+    res.status(200).json({ posts });
+  } catch {
+    res.status(500).json({ error: '지역 기반 게시글 조회 실패' });
   }
 };

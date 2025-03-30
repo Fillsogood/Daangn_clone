@@ -116,3 +116,22 @@ export const deletePost = async (postId: number, userId: number) => {
 
   return true;
 };
+
+export const getPostsByRegion = async (regionId: number, page = 1, limit = 10) => {
+  const skip = (page - 1) * limit;
+
+  return await prisma.post.findMany({
+    skip,
+    take: limit,
+    orderBy: { createdAt: 'desc' },
+    where: {
+      user: {
+        regionId,
+      },
+    },
+    include: {
+      user: { select: { nickname: true } },
+      images: { take: 1, select: { url: true } },
+    },
+  });
+};
