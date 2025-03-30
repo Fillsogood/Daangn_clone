@@ -7,7 +7,7 @@ export const getAllRegions = async (req: Request, res: Response): Promise<void> 
     const regions = await getAllRegionsService();
 
     res.status(200).json({ regions });
-  } catch {
-    res.status(500).json({ error: '지역 목록 조회 실패' });
+  } catch (err) {
+    res.status(500).json({ error: '지역 목록 조회 실패', message: err });
   }
 };

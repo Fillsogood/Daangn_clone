@@ -65,8 +65,8 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
       .clearCookie('refreshToken', { path: '/auth/refresh' })
       .status(200)
       .json({ message: '로그아웃 되었습니다.' });
-  } catch {
-    res.status(400).json({ error: '잘못된 요청입니다.' });
+  } catch (err) {
+    res.status(400).json({ error: '잘못된 요청입니다.', message: err });
   }
 };
 
@@ -149,8 +149,8 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
       })
       .status(200)
       .json({ message: '토큰이 재발급되었습니다.' });
-  } catch {
-    res.status(401).json({ error: '유효하지 않은 Refresh Token입니다.' });
+  } catch (err) {
+    res.status(401).json({ error: '유효하지 않은 Refresh Token입니다.', message: err });
   }
 };
 
