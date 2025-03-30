@@ -6,6 +6,7 @@ import swaggerSpec from './src/config/swagger';
 import authRouter from './src/routes/auth.route';
 import userRouter from './src/routes/user.route';
 import regionRouter from './src/routes/region.route';
+import postRouter from './src/routes/post.route';
 
 dotenv.config();
 
@@ -22,7 +23,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/regions', regionRouter);
-
+app.use('/api/posts', postRouter);
 // 기본 라우트
 app.get('/', (req, res) => {
   res.send('당근 백엔드 서버 실행 중!');
