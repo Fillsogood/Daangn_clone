@@ -1,5 +1,5 @@
 import prisma from '../config/prisma';
-import { CreatePostInput, GetPostsQuery } from '../types/post.types';
+import { CreatePostInput, GetPostsQuery, UpdatePostInput } from '../types/post.types';
 
 export const createPost = async (userId: number, input: CreatePostInput) => {
   const { title, content, price, images } = input;
@@ -59,4 +59,42 @@ export const getPostById = async (id: number) => {
       },
     },
   });
+};
+
+export const updatePost = async (postId: number, userId: number, data: UpdatePostInput) => {
+  // 게시글 존재 여부 + 소유자 확인
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+  });
+
+  if (!post || post.userId !== userId) {
+    throw new Error('권한이 없거나 게시글이 존재하지 않습니다.');
+  }
+
+  // 기존 이미지 모두 삭제
+  if (data.images) {
+    await prisma.postImage.deleteMany({ where: { postId } });
+  }
+
+  // 게시글 수정
+  const updatedPost = await prisma.post.update({
+    where: { id: postId },
+    data: {
+      title: data.title,
+      content: data.content,
+      price: data.price,
+      status: data.status,
+      updatedAt: new Date(),
+      images: data.images
+        ? {
+            create: data.images.map((url) => ({ url })),
+          }
+        : undefined,
+    },
+    include: {
+      images: true,
+    },
+  });
+
+  return updatedPost;
 };

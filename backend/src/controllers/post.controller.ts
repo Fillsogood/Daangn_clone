@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { CreatePostInput } from '../types/post.types';
+import { CreatePostInput, UpdatePostInput } from '../types/post.types';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import * as postService from '../services/post.service';
 
@@ -54,5 +54,21 @@ export const getPostById = async (req: Request, res: Response): Promise<void> =>
     res.status(200).json({ post });
   } catch (err) {
     res.status(500).json({ error: '게시글 조회 실패', message: err });
+  }
+};
+
+//게시글 수정 기능
+export const updatePost = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const postId = parseInt(req.params.id);
+    if (!req.userId || isNaN(postId)) {
+      res.status(400).json({ error: '잘못된 요청입니다.' });
+      return;
+    }
+
+    const updated = await postService.updatePost(postId, req.userId, req.body as UpdatePostInput);
+    res.status(200).json({ message: '게시글이 수정되었습니다.', post: updated });
+  } catch (err) {
+    res.status(403).json({ error: err instanceof Error ? err.message : '수정 실패' });
   }
 };
