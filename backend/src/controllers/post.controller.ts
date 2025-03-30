@@ -72,3 +72,19 @@ export const updatePost = async (req: AuthRequest, res: Response): Promise<void>
     res.status(403).json({ error: err instanceof Error ? err.message : '수정 실패' });
   }
 };
+
+//게시글 삭제 기능
+export const deletePost = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const postId = parseInt(req.params.id);
+    if (!req.userId || isNaN(postId)) {
+      res.status(400).json({ error: '잘못된 요청입니다.' });
+      return;
+    }
+
+    await postService.deletePost(postId, req.userId);
+    res.status(200).json({ message: '게시글이 삭제되었습니다.' });
+  } catch (err) {
+    res.status(403).json({ error: err instanceof Error ? err.message : '삭제 실패' });
+  }
+};
