@@ -22,7 +22,6 @@ export const getUserById = async (userId: number) => {
 };
 
 // 유저 수정
-// services/user.service.ts
 export const updateUser = async (userId: number, updates: UpdateUserInput) => {
   return await prisma.user.update({
     where: { id: userId },
@@ -34,6 +33,25 @@ export const updateUser = async (userId: number, updates: UpdateUserInput) => {
       regionId: true,
       createdAt: true,
       updatedAt: true,
+    },
+  });
+};
+
+//내가 쓴 게시물 조회
+export const getMyPosts = async (userId: number) => {
+  return await prisma.post.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      title: true,
+      price: true,
+      status: true,
+      createdAt: true,
+      images: {
+        take: 1,
+        select: { url: true },
+      },
     },
   });
 };

@@ -54,3 +54,18 @@ export const updateMe = async (req: AuthRequest, res: Response): Promise<void> =
     res.status(500).json({ error: '회원 정보 수정 중 오류가 발생했습니다.', message: err });
   }
 };
+
+// 내가 쓴 게시물 조회
+export const getMyPosts = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(401).json({ error: '로그인이 필요합니다.' });
+      return;
+    }
+
+    const posts = await userService.getMyPosts(req.userId);
+    res.status(200).json({ posts });
+  } catch {
+    res.status(500).json({ error: '내 게시글 목록 조회 실패' });
+  }
+};
