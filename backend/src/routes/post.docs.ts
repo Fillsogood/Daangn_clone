@@ -306,3 +306,29 @@
  *       500:
  *         description: 서버 오류
  */
+
+/**
+ * @swagger
+ * /api/posts/search:
+ *   get:
+ *     summary: 게시글 검색
+ *     tags: [Post]
+ *     parameters:
+ *       - name: keyword
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: sort
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [recent, price_asc, price_desc]
+ *         description: 정렬 조건
+ *     responses:
+ *       200:
+ *         description: 검색 결과 반환
+ *       400:
+ *         description: 잘못된 요청
+ */
