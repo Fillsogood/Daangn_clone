@@ -114,3 +114,22 @@ export const getPostsByUserRegion = async (req: AuthRequest, res: Response): Pro
     res.status(500).json({ error: '지역 기반 게시글 조회 실패' });
   }
 };
+
+// 판매 상태변화 기능
+export const updatePostStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const postId = parseInt(req.params.id);
+      const { status } = req.body;
+  
+      if (!req.userId || isNaN(postId) || !status) {
+        res.status(400).json({ error: '잘못된 요청입니다.' });
+        return;
+      }
+  
+      const updated = await postService.updatePostStatus(postId, req.userId, status);
+      res.status(200).json({ message: '상태 변경 성공', post: updated });
+    } catch (err) {
+      res.status(403).json({ error: err instanceof Error ? err.message : '상태 변경 실패' });
+    }
+  };
+  
