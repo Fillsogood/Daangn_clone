@@ -8,6 +8,7 @@ import userRouter from './src/routes/user.route';
 import regionRouter from './src/routes/region.route';
 import postRouter from './src/routes/post.route';
 import likeRouter from './src/routes/like.route';
+import chatRouter from './src/routes/chat.route';
 
 import http from 'http';
 import { Server } from 'socket.io';
@@ -36,6 +37,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter, likeRouter);
 app.use('/api/regions', regionRouter);
 app.use('/api/posts', postRouter, likeRouter);
+app.use('/api/chatrooms', chatRouter);
 
 // 기본 라우트
 app.get('/', (req, res) => {
