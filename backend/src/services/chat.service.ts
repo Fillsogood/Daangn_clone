@@ -30,3 +30,31 @@ export const createChatRoom = async (buyerId: number, postId: number) => {
     },
   });
 };
+
+export const getMessagesByRoom = async (roomId: number) => {
+  return await prisma.chatMessage.findMany({
+    where: { roomId },
+    orderBy: { createdAt: 'asc' },
+    include: {
+      sender: {
+        select: {
+          id: true,
+          nickname: true,
+        },
+      },
+    },
+  });
+};
+
+export const sendMessage = async (roomId: number, senderId: number, content: string) => {
+  // 채팅방 참여자 검증
+  const room = await prisma.chatRoom.findUnique({ where: { id: roomId } });
+
+  if (!room || (room.buyerId !== senderId && room.sellerId !== senderId)) {
+    throw new Error('채팅방 참여자가 아닙니다.');
+  }
+
+  return await prisma.chatMessage.create({
+    data: { roomId, senderId, content },
+  });
+};
