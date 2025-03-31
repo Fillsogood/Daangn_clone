@@ -27,10 +27,10 @@ jobs:
           node-version: 18
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Lint Check (ESLint)
-        run: npx eslint . --ext .js,.jsx
+        run: npx eslint . --ext .js,.jsx,.ts,.tsx
 
       - name: Format Check (Prettier)
         run: npx prettier --check .
