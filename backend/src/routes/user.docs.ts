@@ -102,3 +102,20 @@
  *       500:
  *         description: 서버 오류
  */
+
+/**
+ * @swagger
+ * /api/users/me/posts:
+ *   get:
+ *     summary: 내가 작성한 게시글 목록 조회
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 게시글 목록 조회 성공
+ *       401:
+ *         description: 인증 실패
+ *       500:
+ *         description: 서버 오류
+ */
