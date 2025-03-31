@@ -218,3 +218,55 @@
  *       500:
  *         description: 서버 오류
  */
+
+/**
+ * @swagger
+ * /api/posts/{id}/like:
+ *   post:
+ *     summary: 게시글에 관심 등록
+ *     tags: [Like]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: 관심 등록할 게시글 ID
+ *     responses:
+ *       201:
+ *         description: 관심 등록 성공
+ *       400:
+ *         description: 잘못된 요청
+ *       401:
+ *         description: 인증 실패
+ *       500:
+ *         description: 서버 오류
+ */
+
+/**
+ * @swagger
+ * /api/posts/{id}/like:
+ *   delete:
+ *     summary: 게시글 관심 해제
+ *     tags: [Like]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: 관심 해제할 게시글 ID
+ *     responses:
+ *       200:
+ *         description: 관심 해제 성공
+ *       400:
+ *         description: 잘못된 요청
+ *       401:
+ *         description: 인증 실패
+ *       500:
+ *         description: 서버 오류
+ */
