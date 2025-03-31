@@ -58,3 +58,42 @@ export const sendMessage = async (roomId: number, senderId: number, content: str
     data: { roomId, senderId, content },
   });
 };
+
+// services/chat.service.ts
+export const getMyChatRooms = async (userId: number) => {
+  return await prisma.chatRoom.findMany({
+    where: {
+      OR: [{ buyerId: userId }, { sellerId: userId }],
+    },
+    orderBy: { createdAt: 'desc' },
+    include: {
+      post: {
+        select: {
+          id: true,
+          title: true,
+          price: true,
+        },
+      },
+      buyer: {
+        select: {
+          id: true,
+          nickname: true,
+        },
+      },
+      seller: {
+        select: {
+          id: true,
+          nickname: true,
+        },
+      },
+      messages: {
+        take: 1,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          content: true,
+          createdAt: true,
+        },
+      },
+    },
+  });
+};
