@@ -85,3 +85,20 @@
  *       500:
  *         description: 서버 오류
  */
+
+/**
+ * @swagger
+ * /api/users/me/likes:
+ *   get:
+ *     summary: 내가 찜한 게시글 목록 조회
+ *     tags: [Like]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 찜한 게시글 목록 조회 성공
+ *       401:
+ *         description: 인증 실패
+ *       500:
+ *         description: 서버 오류
+ */
