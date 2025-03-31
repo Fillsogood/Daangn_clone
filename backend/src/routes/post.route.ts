@@ -4,6 +4,7 @@ import { verifyToken } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 router.get('/region', verifyToken, postController.getPostsByUserRegion);
+router.get('/search', postController.searchPosts);
 router.post('/', verifyToken, postController.createPost);
 router.get('/', postController.getPosts);
 router.get('/:id', postController.getPostById);

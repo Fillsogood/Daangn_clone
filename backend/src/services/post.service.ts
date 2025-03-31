@@ -158,3 +158,55 @@ export const updatePostStatus = async (postId: number, userId: number, status: s
     data: { status },
   });
 };
+
+export const searchPosts = async (keyword: string, sort: string = 'recent', regionId?: number) => {
+  type SortOrder = 'asc' | 'desc';
+  let orderBy: { price?: SortOrder; createdAt?: SortOrder };
+
+  switch (sort) {
+    case 'price_asc':
+      orderBy = { price: 'asc' };
+      break;
+    case 'price_desc':
+      orderBy = { price: 'desc' };
+      break;
+    case 'recent':
+    default:
+      orderBy = { createdAt: 'desc' };
+      break;
+  }
+
+  // 🔍 지역에 속한 유저 ID 목록 조회
+  let userIds: number[] | undefined;
+
+  if (regionId) {
+    const users = await prisma.user.findMany({
+      where: { regionId },
+      select: { id: true },
+    });
+    userIds = users.map((u: { id: number }) => u.id);
+  }
+
+  return await prisma.post.findMany({
+    where: {
+      AND: [
+        ...(regionId && userIds?.length ? [{ userId: { in: userIds } }] : []),
+        {
+          OR: [{ title: { contains: keyword } }, { content: { contains: keyword } }],
+        },
+      ],
+    },
+    orderBy,
+    select: {
+      id: true,
+      title: true,
+      price: true,
+      status: true,
+      createdAt: true,
+      images: {
+        take: 1,
+        select: { url: true },
+      },
+    },
+  });
+};

@@ -117,19 +117,46 @@ export const getPostsByUserRegion = async (req: AuthRequest, res: Response): Pro
 
 // 판매 상태변화 기능
 export const updatePostStatus = async (req: AuthRequest, res: Response): Promise<void> => {
-    try {
-      const postId = parseInt(req.params.id);
-      const { status } = req.body;
-  
-      if (!req.userId || isNaN(postId) || !status) {
-        res.status(400).json({ error: '잘못된 요청입니다.' });
-        return;
-      }
-  
-      const updated = await postService.updatePostStatus(postId, req.userId, status);
-      res.status(200).json({ message: '상태 변경 성공', post: updated });
-    } catch (err) {
-      res.status(403).json({ error: err instanceof Error ? err.message : '상태 변경 실패' });
+  try {
+    const postId = parseInt(req.params.id);
+    const { status } = req.body;
+
+    if (!req.userId || isNaN(postId) || !status) {
+      res.status(400).json({ error: '잘못된 요청입니다.' });
+      return;
     }
-  };
-  
+
+    const updated = await postService.updatePostStatus(postId, req.userId, status);
+    res.status(200).json({ message: '상태 변경 성공', post: updated });
+  } catch (err) {
+    res.status(403).json({ error: err instanceof Error ? err.message : '상태 변경 실패' });
+  }
+};
+
+// 검색 기능
+export const searchPosts = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const keyword = req.query.keyword as string;
+    const sort = (req.query.sort as string) || 'recent';
+
+    if (!keyword || keyword.trim() === '') {
+      res.status(400).json({ error: '검색어를 입력해주세요.' });
+      return;
+    }
+
+    let regionId: number | undefined = undefined;
+
+    // 로그인한 경우에만 지역 ID 조회
+    if (req.userId) {
+      const user = await getUserById(req.userId);
+      regionId = user?.region?.id;
+    }
+
+    const posts = await postService.searchPosts(keyword, sort, regionId);
+
+    res.status(200).json({ posts });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '서버 오류';
+    res.status(500).json({ error: '검색 중 오류 발생', message });
+  }
+};
