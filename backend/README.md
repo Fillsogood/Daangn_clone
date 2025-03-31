@@ -11,27 +11,24 @@ mkdir backend
 cd backend
 npm init -y
 
-npm install express cors dotenv
-npm install -D nodemon
-
+npm install cors dotenv
 npm install -D eslint prettier eslint-config-prettier
-
 npm install -D typescript ts-node @types/node
 npm install -D nodemon @types/express
-npm install express
 
+# Prisma 설치 및 초기 실행
 npm install @prisma/client
 npx prisma init
-npx prisma generate
 
-# Prisma 명령 실행 기능
-npx prisma generate
+# Prisma 마이그레이션 생성
 npx prisma migrate dev --name init
-npx prisma studio
+# 마이그레이션 실행
+npx prisma generate
 
 ```
 
 ## 개발 도구
+
 ```
 
 코드 검사

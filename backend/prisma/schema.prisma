@@ -13,10 +13,11 @@ model User {
   password     String?          // 일반 로그인만 해당
   nickname     String
   regionId     Int
+  refreshToken String?
   region       Region           @relation(fields: [regionId], references: [id])
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
-  socialLinks  SocialAccount[]  // 연결된 소셜 계정들
+  socialAccounts  SocialAccount[]  // 연결된 소셜 계정들
   posts        Post[]
   likes        Like[]
   messages     ChatMessage[]
@@ -45,7 +46,7 @@ model Post {
   title     String
   content   String
   price     Int
-  imageUrl  String
+  images    PostImage[]
   status    String   @default("selling")
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
@@ -53,6 +54,13 @@ model Post {
   chatRooms ChatRoom[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model PostImage {
+  id      Int    @id @default(autoincrement())
+  url     String
+  postId  Int
+  post    Post   @relation(fields: [postId], references: [id])
 }
 
 model Like {
