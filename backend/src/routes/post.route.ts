@@ -1,20 +1,14 @@
 import express from 'express';
-import {
-  createPost,
-  getPosts,
-  getPostById,
-  updatePost,
-  deletePost,
-  getPostsByUserRegion,
-} from '../controllers/post.controller';
+import * as postController from '../controllers/post.controller';
 import { verifyToken } from '../middlewares/auth.middleware';
 
 const router = express.Router();
-router.get('/region', verifyToken, getPostsByUserRegion);
-router.post('/', verifyToken, createPost);
-router.get('/', getPosts);
-router.get('/:id', getPostById);
-router.patch('/:id', verifyToken, updatePost);
-router.delete('/:id', verifyToken, deletePost);
+router.get('/region', verifyToken, postController.getPostsByUserRegion);
+router.post('/', verifyToken, postController.createPost);
+router.get('/', postController.getPosts);
+router.get('/:id', postController.getPostById);
+router.patch('/:id', verifyToken, postController.updatePost);
+router.delete('/:id', verifyToken, postController.deletePost);
+router.patch('/:id/status', verifyToken, postController.updatePostStatus);
 
 export default router;

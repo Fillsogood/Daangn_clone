@@ -270,3 +270,39 @@
  *       500:
  *         description: 서버 오류
  */
+
+/**
+ * @swagger
+ * /posts/{id}/status:
+ *   patch:
+ *     summary: 게시글 상태 변경
+ *     tags: [Post]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: 게시글 ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [selling, reserved, sold]
+ *     responses:
+ *       200:
+ *         description: 상태 변경 성공
+ *       400:
+ *         description: 잘못된 요청
+ *       403:
+ *         description: 권한 없음
+ *       500:
+ *         description: 서버 오류
+ */

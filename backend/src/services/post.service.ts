@@ -135,3 +135,26 @@ export const getPostsByRegion = async (regionId: number, page = 1, limit = 10) =
     },
   });
 };
+
+export const updatePostStatus = async (postId: number, userId: number, status: string) => {
+  const validStatus = ['selling', 'reserved', 'sold'];
+
+  if (!validStatus.includes(status)) {
+    throw new Error('유효하지 않은 상태입니다.');
+  }
+
+  const post = await prisma.post.findUnique({ where: { id: postId } });
+
+  if (!post) {
+    throw new Error('게시글이 존재하지 않습니다.');
+  }
+
+  if (post.userId !== userId) {
+    throw new Error('수정 권한이 없습니다.');
+  }
+
+  return await prisma.post.update({
+    where: { id: postId },
+    data: { status },
+  });
+};
