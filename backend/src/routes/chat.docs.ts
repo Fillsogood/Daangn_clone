@@ -82,3 +82,20 @@
  *       500:
  *         description: 서버 오류
  */
+
+/**
+ * @swagger
+ * /api/chatrooms:
+ *   get:
+ *     summary: 내가 참여한 채팅방 목록 조회
+ *     tags: [Chat]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 채팅방 목록 조회 성공
+ *       401:
+ *         description: 인증 실패
+ *       500:
+ *         description: 서버 오류
+ */
