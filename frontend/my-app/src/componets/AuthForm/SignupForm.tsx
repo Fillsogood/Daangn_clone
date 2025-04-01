@@ -71,7 +71,6 @@ const SignupForm = () => {
         <option value={1}>서울 강남구</option>
         <option value={2}>서울 서초구</option>
         <option value={3}>서울 송파구</option>
-        {/* ⚠️ 실제 지역 목록은 API로 받아서 처리하는 것이 이상적 */}
       </select>
       {error && <p className={styles.error}>{error}</p>}
       <button type="submit">회원가입</button>
