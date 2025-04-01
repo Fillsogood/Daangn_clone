@@ -7,8 +7,8 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import prettier from 'eslint-config-prettier';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
 
-/** @type {import("eslint").Linter.FlatConfig[]} */
 export default tseslint.config(
+  ...tseslint.configs.recommended,
   { ignores: ['dist'] },
 
   {
@@ -36,6 +36,8 @@ export default tseslint.config(
       'react/react-in-jsx-scope': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'prettier/prettier': 'warn',
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },
   },
 

@@ -46,6 +46,16 @@
   color: white;
 }
 
+.nickname {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  line-height: 1; /* 세로 정렬 보정 */
+}
+
 /* session css */
 .hero {
   text-align: center;
