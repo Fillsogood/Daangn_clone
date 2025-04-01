@@ -62,7 +62,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
     // 쿠키 제거
     res
       .clearCookie('token')
-      .clearCookie('refreshToken', { path: '/auth/refresh' })
+      .clearCookie('refreshToken')
       .status(200)
       .json({ message: '로그아웃 되었습니다.' });
   } catch (err) {

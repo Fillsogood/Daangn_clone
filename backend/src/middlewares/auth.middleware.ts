@@ -6,17 +6,16 @@ export interface AuthRequest extends Request {
 }
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction): void => {
-  const authHeader = req.headers.authorization;
+  const token = req.cookies?.token; // 쿠키에서 토큰 추출
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!token) {
     res.status(401).json({ error: '토큰이 없습니다.' });
     return;
   }
 
-  const token = authHeader.split(' ')[1];
-
   try {
-    req.userId = verify<{ userId: number }>(token).userId;
+    const decoded = verify<{ userId: number }>(token);
+    req.userId = decoded.userId;
     next();
   } catch {
     res.status(401).json({ error: '유효하지 않은 토큰입니다.' });

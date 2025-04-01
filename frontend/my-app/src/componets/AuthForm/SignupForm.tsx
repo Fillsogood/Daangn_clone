@@ -1,26 +1,36 @@
-// src/components/AuthForm/SignupForm.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import React from 'react';
 import styles from './SignupForm.module.css';
 import { signupApi } from '../../api/auth';
+import { fetchRegions, Region } from '../../api/region';
 import { useNavigate } from 'react-router-dom';
-import React from 'react';
-
-interface SignupFormData {
-  email: string;
-  password: string;
-  nickname: string;
-  regionId: number;
-}
 
 const SignupForm = () => {
-  const [form, setForm] = useState<SignupFormData>({
+  const [form, setForm] = useState({
     email: '',
     password: '',
     nickname: '',
-    regionId: 1, // 기본 지역
+    regionId: 1,
   });
+  const [regions, setRegions] = useState<Region[]>([]);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // 지역 목록 불러오기
+  useEffect(() => {
+    const loadRegions = async () => {
+      try {
+        const res = await fetchRegions();
+        setRegions(res);
+        if (res.length > 0) {
+          setForm((prev) => ({ ...prev, regionId: res[0].id }));
+        }
+      } catch {
+        setError('지역 정보를 불러올 수 없습니다.');
+      }
+    };
+    loadRegions();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -30,13 +40,14 @@ const SignupForm = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await signupApi(form);
+      alert('회원가입이 완료되었습니다!');
       navigate('/login');
-    } catch (err: any) {
-      setError(err.response?.data?.error || '회원가입 실패');
+    } catch {
+      setError('회원가입 실패');
     }
   };
 
@@ -67,11 +78,15 @@ const SignupForm = () => {
         onChange={handleChange}
         required
       />
-      <select name="regionId" value={form.regionId} onChange={handleChange}>
-        <option value={1}>서울 강남구</option>
-        <option value={2}>서울 서초구</option>
-        <option value={3}>서울 송파구</option>
+
+      <select name="regionId" value={form.regionId} onChange={handleChange} required>
+        {regions.map((region) => (
+          <option key={region.id} value={region.id}>
+            {region.name}
+          </option>
+        ))}
       </select>
+
       {error && <p className={styles.error}>{error}</p>}
       <button type="submit">회원가입</button>
     </form>
