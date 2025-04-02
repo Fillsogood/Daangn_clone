@@ -25,7 +25,8 @@ api.interceptors.response.use(
         // 기존 요청 다시 시도
         return api(originalRequest);
       } catch (refreshError) {
-        // refresh 실패 시 → 로그인 페이지로 이동하도록 추가 가능
+        // refresh 실패 시 → 로그인 페이지로 이동
+        window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
