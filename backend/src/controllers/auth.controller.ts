@@ -164,77 +164,101 @@ export const kakaoLogin = (req: Request, res: Response) => {
 export const kakaoCallback = async (req: Request, res: Response) => {
   const code = req.query.code as string;
 
-  // 인가 코드로 카카오에 Access Token 요청
-  const tokenRes = await axios.post('https://kauth.kakao.com/oauth/token', null, {
-    params: {
-      grant_type: 'authorization_code',
-      client_id: process.env.KAKAO_CLIENT_ID,
-      redirect_uri: process.env.KAKAO_REDIRECT_URI,
-      code,
-    },
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  });
-
-  const kakaoAccessToken = tokenRes.data.access_token;
-
-  // 카카오 사용자 정보 요청
-  const userRes = await axios.get('https://kapi.kakao.com/v2/user/me', {
-    headers: { Authorization: `Bearer ${kakaoAccessToken}` },
-  });
-
-  // 사용자 정보 추출
-  const kakaoUser = userRes.data;
-  const kakaoId = kakaoUser.id;
-  const nickname = kakaoUser.properties.nickname;
-  const email = kakaoUser.kakao_account?.email || null;
-
-  // DB에서 해당 소셜 계정이 연결된 유저 찾기
-  let user = await prisma.user.findFirst({
-    where: {
-      socialAccounts: {
-        some: {
-          provider: 'kakao',
-          socialId: String(kakaoId),
-        },
+  try {
+    // 1. 인가 코드로 카카오에 Access Token 요청
+    const tokenRes = await axios.post('https://kauth.kakao.com/oauth/token', null, {
+      params: {
+        grant_type: 'authorization_code',
+        client_id: process.env.KAKAO_CLIENT_ID,
+        redirect_uri: process.env.KAKAO_REDIRECT_URI,
+        code,
       },
-    },
-  });
-  // 유저가 없으면 새로 회원가입 처리
-  if (!user) {
-    user = await prisma.user.create({
-      data: {
-        nickname,
-        email,
-        regionId: 1,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
+
+    const kakaoAccessToken = tokenRes.data.access_token;
+
+    // 2. 카카오 사용자 정보 요청
+    const userRes = await axios.get('https://kapi.kakao.com/v2/user/me', {
+      headers: { Authorization: `Bearer ${kakaoAccessToken}` },
+    });
+
+    const kakaoUser = userRes.data;
+    const kakaoId = kakaoUser.id;
+    const nickname = kakaoUser.properties.nickname;
+    const email = kakaoUser.kakao_account?.email || null;
+
+    // 3. 기존 소셜 계정 찾기
+    let user = await prisma.user.findFirst({
+      where: {
         socialAccounts: {
-          create: [{ provider: 'kakao', socialId: String(kakaoId) }],
+          some: {
+            provider: 'kakao',
+            socialId: String(kakaoId),
+          },
         },
       },
     });
+
+    // 4. 소셜 계정이 없고 같은 이메일의 유저가 있는 경우 → 소셜 연결만 추가
+    if (!user && email) {
+      const existingUser = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (existingUser) {
+        // 소셜 계정만 연결
+        await prisma.socialAccount.create({
+          data: {
+            provider: 'kakao',
+            socialId: String(kakaoId),
+            userId: existingUser.id,
+          },
+        });
+        user = existingUser;
+      }
+    }
+
+    // 5. 여전히 유저가 없으면 새로 생성
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          nickname,
+          email,
+          regionId: 1,
+          socialAccounts: {
+            create: [{ provider: 'kakao', socialId: String(kakaoId) }],
+          },
+        },
+      });
+    }
+
+    // 6. 토큰 발급 및 저장
+    const accessToken = signToken({ userId: user.id });
+    const refreshToken = signRefreshToken({ userId: user.id });
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken },
+    });
+
+    // 7. 프론트로 리디렉션
+    res
+      .cookie('token', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 60,
+      })
+      .cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      })
+      .redirect('http://localhost:5173');
+  } catch (err) {
+    console.error('카카오 로그인 실패:', err);
+    res.status(500).json({ error: '카카오 로그인 실패', message: err });
   }
-  // JWT Access / Refresh Token 발급
-  const accessToken = signToken({ userId: user.id });
-  const refreshToken = signRefreshToken({ userId: user.id });
-
-  // DB에 새 Refresh Token 저장
-  await prisma.user.update({
-    where: { id: user.id },
-    data: { refreshToken },
-  });
-
-  res
-    .cookie('token', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 1000 * 60 * 15,
-    })
-    .cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/auth/refresh',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    })
-    .redirect('http://localhost:3000'); // 로그인 완료 후 프론트로 리디렉션
 };

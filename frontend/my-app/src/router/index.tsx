@@ -1,19 +1,19 @@
-// src/router/index.tsx
 import { createBrowserRouter } from 'react-router-dom';
-// import Layout from '../components/Layout/Layout';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import Layout from '../componets/Layout/Layout';
+import KakaoCallback from '../pages/\bKakaoCallback';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />, // Layout은 공통
+    element: <Layout />, // 공통 레이아웃
     children: [
       { index: true, element: <Home /> },
       { path: 'login', element: <Login /> },
       { path: 'signup', element: <Signup /> },
+      { path: 'auth/kakao/callback', element: <KakaoCallback /> }, // ✅ 콜백 경로 추가
     ],
   },
 ]);

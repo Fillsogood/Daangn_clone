@@ -1,0 +1,25 @@
+.kakaoBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fee500;
+  color: #3c1e1e;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s ease;
+}
+
+.kakaoBtn:hover {
+  background-color: #ffeb3b;
+}
+
+.kakaoBtn img {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
