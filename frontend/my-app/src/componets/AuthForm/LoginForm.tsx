@@ -4,6 +4,7 @@ import { loginApi, getMeApi } from '../../api/auth'; // getMeApi 추가
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth'; // context import
 import React from 'react';
+import KakaoLoginButton from './KakaoLoginButton';
 interface LoginFormData {
   email: string;
   password: string;
@@ -53,6 +54,7 @@ const LoginForm = () => {
       />
       {error && <p className={styles.error}>{error}</p>}
       <button type="submit">로그인</button>
+      <KakaoLoginButton />
     </form>
   );
 };
