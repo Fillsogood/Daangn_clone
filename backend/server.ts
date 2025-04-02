@@ -26,6 +26,9 @@ app.use(
   cors({
     origin: 'http://localhost:5173', // 프론트엔드 주소
     credentials: true, // 쿠키 포함 허용
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT'],
+    exposedHeaders: ['ETag'],
   })
 );
 app.use(cookieParser());

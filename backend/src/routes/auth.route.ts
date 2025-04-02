@@ -11,7 +11,7 @@ router.post('/login', authController.login);
 // 토큰 유효 검사
 router.get('/me', verifyToken, authController.me);
 // 리프레시 재발급
-router.post('/refresh', authController.refresh);
+router.get('/refresh', authController.refresh);
 //로그아웃
 router.post('/logout', authController.logout);
 // 카카오 핸들러
