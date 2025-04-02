@@ -137,8 +137,18 @@ export const getPostsByRegion = async (regionId: number, page = 1, limit = 10) =
       },
     },
     include: {
-      user: { select: { nickname: true } },
-      images: { take: 1, select: { url: true } },
+      user: {
+        select: {
+          nickname: true,
+          region: {
+            select: { name: true }, // region name 추가
+          },
+        },
+      },
+      images: {
+        take: 1,
+        select: { url: true },
+      },
     },
   });
 };
