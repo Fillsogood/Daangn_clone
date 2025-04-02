@@ -20,7 +20,12 @@ export interface Post {
   }[];
 }
 
-// 게시글 리스트 조회
+// 지역 기반 게시글 리스트 조회
+export const fetchPostsRegion = async (): Promise<Post[]> => {
+  const res = await api.get<{ posts: Post[] }>('/posts/region');
+  return res.data.posts;
+};
+
 export const fetchPosts = async (): Promise<Post[]> => {
   const res = await api.get<{ posts: Post[] }>('/posts');
   return res.data.posts;
