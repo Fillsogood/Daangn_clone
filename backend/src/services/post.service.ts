@@ -35,10 +35,17 @@ export const getPosts = async (query: GetPostsQuery) => {
     },
     include: {
       user: {
-        select: { nickname: true },
+        select: {
+          nickname: true,
+          region: {
+            select: {
+              name: true,
+            },
+          },
+        },
       },
       images: {
-        take: 1, // 대표 이미지 1장만
+        take: 1,
         select: { url: true },
       },
     },
@@ -46,6 +53,7 @@ export const getPosts = async (query: GetPostsQuery) => {
 
   return posts;
 };
+
 
 export const getPostById = async (id: number) => {
   return await prisma.post.findUnique({

@@ -56,32 +56,7 @@
 }
 
 /* session css */
-.hero {
-  text-align: center;
-  margin-top: 80px;
-  font-size: 24px;
-}
 
-.cta {
-  text-align: center;
-  margin-top: 40px;
-}
-
-button {
-  background-color: #e97341;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  font-size: 16px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.cta span {
-  color: #e97341;
-  cursor: pointer;
-  margin-left: 8px;
-}
 
 /* footer css */
 .footer {

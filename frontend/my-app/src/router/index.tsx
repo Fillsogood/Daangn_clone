@@ -13,7 +13,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'login', element: <Login /> },
       { path: 'signup', element: <Signup /> },
-      { path: 'auth/kakao/callback', element: <KakaoCallback /> }, // ✅ 콜백 경로 추가
+      { path: 'auth/kakao/callback', element: <KakaoCallback /> }, //콜백 경로 추가
     ],
   },
 ]);

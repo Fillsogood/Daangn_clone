@@ -1,10 +1,9 @@
 // src/pages/Home.tsx
-import HomeHero from '../componets/HomeForm/HomeHero';
-
+import PostListPage from '../pages/PostListPage';
 const Home = () => {
   return (
     <div className="container">
-      <HomeHero />
+      <PostListPage />
     </div>
   );
 };
