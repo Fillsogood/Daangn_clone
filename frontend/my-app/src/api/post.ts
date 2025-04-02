@@ -38,3 +38,14 @@ export const createPost = async (data: CreatePostInput) => {
   const res = await api.post('/posts', data);
   return res.data;
 };
+
+interface SearchParams {
+  keyword: string;
+  sort?: 'recent' | 'price_asc' | 'price_desc';
+  regionId?: number;
+}
+
+export const searchPosts = async (params: SearchParams): Promise<Post[]> => {
+  const res = await api.get<{ posts: Post[] }>('/posts/search', { params });
+  return res.data.posts;
+};

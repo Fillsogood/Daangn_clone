@@ -214,6 +214,16 @@ export const searchPosts = async (keyword: string, sort: string = 'recent', regi
         take: 1,
         select: { url: true },
       },
+      user: {
+        select: {
+          nickname: true,
+          region: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 };

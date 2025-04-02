@@ -116,7 +116,7 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
 
       res
         .clearCookie('token')
-        .clearCookie('refreshToken', { path: '/auth/refresh' })
+        .clearCookie('refreshToken')
         .status(403)
         .json({ error: '재사용된 Refresh Token입니다. 보안을 위해 로그아웃됩니다.' });
       return;
@@ -145,7 +145,6 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
-        path: '/auth/refresh',
       })
       .status(200)
       .json({ message: '토큰이 재발급되었습니다.' });
