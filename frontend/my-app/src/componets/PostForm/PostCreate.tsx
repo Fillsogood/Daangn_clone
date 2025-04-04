@@ -7,11 +7,16 @@ import { createPost } from '../../api/post';
 import { uploadToS3 } from '../../utils/uploadToS3';
 
 const PostForm = () => {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    title: string;
+    content: string;
+    price: number;
+    images: string[]; // never[] 대신 string[]로 타입 지정
+  }>({
     title: '',
     content: '',
     price: 0,
-    images: [''], // 일단 문자열로 테스트, S3 연동 전
+    images: [],
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -43,13 +48,12 @@ const PostForm = () => {
       const imageUrl = await uploadToS3(file);
       setForm((prev) => ({
         ...prev,
-        images: [...prev.images, imageUrl],
+        images: prev.images.length === 0 ? [imageUrl] : [...prev.images, imageUrl], // 빈 배열 체크
       }));
     } catch {
       setError('이미지 업로드 실패');
     }
   };
-
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <h2>게시글 등록</h2>
