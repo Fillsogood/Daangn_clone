@@ -5,6 +5,7 @@ import Signup from '../pages/Signup';
 import Layout from '../componets/Layout/Layout';
 import KakaoCallback from '../pages/\bKakaoCallback';
 import PostCreatePage from '../pages/PostCreatePage';
+import MyPage from '../pages/MyProfile';
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ export const router = createBrowserRouter([
       { path: 'signup', element: <Signup /> },
       { path: 'auth/kakao/callback', element: <KakaoCallback /> }, //콜백 경로 추가
       { path: 'posts/create', element: <PostCreatePage /> },
+      { path: 'mypage', element: <MyPage /> },
     ],
   },
 ]);

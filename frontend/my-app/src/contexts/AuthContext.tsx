@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getMeApi, logoutApi } from '../api/auth';
+import { logoutApi } from '../api/auth';
+import { getMeApi } from '../api/user';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext, AuthUser } from './AuthContextContext';
 import { setAuthHandlers } from './AuthState'; // 추가

@@ -23,21 +23,6 @@ export const signupApi = async (data: SignupInput) => {
   return res.data;
 };
 
-interface User {
-  id: number;
-  nickname: string;
-  email: string;
-  region: {
-    id: number;
-    name: string;
-  };
-}
-
-export const getMeApi = async (): Promise<{ user: User }> => {
-  const res = await api.get<{ user: User }>('/users/me');
-  return res.data;
-};
-
 export const logoutApi = async () => {
   const res = await api.post('/auth/logout');
   return res.data;

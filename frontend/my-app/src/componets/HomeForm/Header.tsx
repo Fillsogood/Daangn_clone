@@ -23,6 +23,7 @@ const Header = () => {
           <>
             <span className={styles.nickname}>{user.nickname}님</span>
             <button onClick={() => navigate('posts/create')}>게시물 등록</button>
+            <button onClick={() => navigate('/mypage')}>마이페이지</button>
             <button onClick={logout}>로그아웃</button>
           </>
         ) : (
