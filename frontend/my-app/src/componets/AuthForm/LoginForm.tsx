@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from './LoginForm.module.css';
-import { loginApi, getMeApi } from '../../api/auth'; // getMeApi 추가
+import { loginApi } from '../../api/auth';
+import { getMeApi } from '../../api/user'; // getMeApi 추가
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth'; // context import
 import React from 'react';

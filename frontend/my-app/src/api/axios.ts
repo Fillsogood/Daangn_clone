@@ -1,6 +1,6 @@
 // api/axios.ts
 import axios from 'axios';
-import { getMeApi } from './auth';
+import { getMeApi } from './user';
 import { triggerLogin, triggerLogout } from '../contexts/AuthState';
 
 const api = axios.create({
