@@ -1,7 +1,6 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import * as likeService from '../services/like.service';
-import { Like } from '../types/like.types';
 
 export const likePost = async (req: AuthRequest, res: Response) => {
   try {
@@ -40,8 +39,8 @@ export const getLikedPosts = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    const likes = await likeService.getMyLikedPosts(req.userId);
-    const posts = likes.map((like: Like) => like.post);
+    const likes = await likeService.getLikedPostsByUser(req.userId);
+    const posts = likes.map((like) => like);
 
     res.status(200).json({ posts });
   } catch {

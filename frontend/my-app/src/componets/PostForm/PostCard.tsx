@@ -9,9 +9,10 @@ import { useNavigate } from 'react-router-dom';
 
 interface Props {
   post: Post;
+  onUnlike?: (_postId: number) => void; // optional
 }
 
-const PostCard = ({ post }: Props) => {
+const PostCard = ({ post, onUnlike }: Props) => {
   const imageUrl = post.images[0]?.url || image; // 기본 이미지
   const regionPart = post.user?.region?.name?.split(' ')[2] || '미지정';
   const [liked, setLiked] = useState(post.liked); // 찜 여부 상태
@@ -28,6 +29,7 @@ const PostCard = ({ post }: Props) => {
       if (liked) {
         await unlikePost(post.id); // 찜 해제
         setLiked(false);
+        onUnlike?.(post.id);
       } else {
         await toggleLikePost(post.id); // 찜 등록
         setLiked(true);

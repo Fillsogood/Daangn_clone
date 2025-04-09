@@ -43,7 +43,6 @@ export const updateUser = async (userId: number, updates: UpdateUserInput) => {
   });
 };
 
-
 //내가 쓴 게시물 조회
 export const getMyPosts = async (userId: number) => {
   return await prisma.post.findMany({
@@ -71,4 +70,3 @@ export const getMyPosts = async (userId: number) => {
     },
   });
 };
-

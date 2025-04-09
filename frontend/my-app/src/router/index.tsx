@@ -7,6 +7,7 @@ import KakaoCallback from '../pages/\bKakaoCallback';
 import PostCreatePage from '../pages/PostCreatePage';
 import MyPage from '../pages/MyProfile';
 import MyPosts from '../componets/MyFrom/MyPosts';
+import MyLikes from '../componets/MyFrom/MyLikes';
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
       { path: 'posts/create', element: <PostCreatePage /> },
       { path: 'mypage', element: <MyPage /> },
       { path: 'myposts', element: <MyPosts /> },
+      { path: 'mylikes', element: <MyLikes /> },
     ],
   },
 ]);
