@@ -35,7 +35,7 @@ const SearchBar = ({ onSearch }: Props) => {
       </select>
 
       <button type="submit" className={styles.submitBtn}>
-        🔍
+        검색
       </button>
     </form>
   );

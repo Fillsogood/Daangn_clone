@@ -28,10 +28,12 @@ input {
 
 select {
   padding: 8px 12px;
-  border: 1px solid #ccc;
   border-radius: 8px;
-  font-size: 14px;
-  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  appearance: none; /* 브라우저 기본 화살표 제거 */
 }
 
 .submitBtn {
