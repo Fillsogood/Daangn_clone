@@ -108,7 +108,7 @@ export const getPostsByUserRegion = async (req: AuthRequest, res: Response): Pro
       return;
     }
 
-    const posts = await postService.getPostsByRegion(user.region.id, page, limit);
+    const posts = await postService.getPostsByRegion(user.region.id, page, limit, req.userId);
     res.status(200).json({ posts });
   } catch {
     res.status(500).json({ error: '지역 기반 게시글 조회 실패' });

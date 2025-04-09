@@ -1,5 +1,5 @@
 import api from './axios';
-
+import { Post } from './post';
 interface User {
   id: number;
   nickname: string;
@@ -18,10 +18,15 @@ export const getMeApi = async (): Promise<{ user: User }> => {
 interface UserInput {
   nickname: string;
   email: string;
-  region: number;
+  regionId: number;
 }
 
 export const updateMeApi = async (data: UserInput): Promise<{ user: User }> => {
   const res = await api.patch<{ user: User }>('/users/me', data);
   return res.data;
+};
+
+export const fetchMyPosts = async (): Promise<Post[]> => {
+  const res = await api.get<{ posts: Post[] }>('/users/me/posts');
+  return res.data.posts;
 };

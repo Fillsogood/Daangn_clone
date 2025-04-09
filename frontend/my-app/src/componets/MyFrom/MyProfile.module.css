@@ -73,3 +73,24 @@ select.input {
 .profileSection button:hover {
   background-color: #e96b2b;
 }
+
+.buttonSection {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.buttonSection button {
+  padding: 0.5rem 1rem;
+  background-color: #ffa500;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.buttonSection button:hover {
+  background-color: #ff8700;
+}

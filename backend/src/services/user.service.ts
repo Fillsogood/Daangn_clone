@@ -31,11 +31,18 @@ export const updateUser = async (userId: number, updates: UpdateUserInput) => {
       email: true,
       nickname: true,
       regionId: true,
+      region: {
+        select: {
+          id: true,
+          name: true, // ✅ 프론트에서 필요한 name 포함
+        },
+      },
       createdAt: true,
       updatedAt: true,
     },
   });
 };
+
 
 //내가 쓴 게시물 조회
 export const getMyPosts = async (userId: number) => {
@@ -52,6 +59,16 @@ export const getMyPosts = async (userId: number) => {
         take: 1,
         select: { url: true },
       },
+      user: {
+        select: {
+          region: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 };
+

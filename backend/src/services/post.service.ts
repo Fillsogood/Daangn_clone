@@ -124,33 +124,38 @@ export const deletePost = async (postId: number, userId: number) => {
   return true;
 };
 
-export const getPostsByRegion = async (regionId: number, page = 1, limit = 10) => {
+export const getPostsByRegion = async (regionId: number, page = 1, limit = 10, userId: number) => {
   const skip = (page - 1) * limit;
 
-  return await prisma.post.findMany({
+  const posts = await prisma.post.findMany({
     skip,
     take: limit,
     orderBy: { createdAt: 'desc' },
     where: {
-      user: {
-        regionId,
-      },
+      user: { regionId },
     },
     include: {
       user: {
         select: {
           nickname: true,
-          region: {
-            select: { name: true }, // region name 추가
-          },
+          region: { select: { name: true } },
         },
       },
       images: {
         take: 1,
         select: { url: true },
       },
+      likes: {
+        where: { userId }, // 현재 유저가 찜한 게시글
+        select: { id: true },
+      },
     },
   });
+
+  return posts.map((post) => ({
+    ...post,
+    liked: post.likes.length > 0,
+  }));
 };
 
 export const updatePostStatus = async (postId: number, userId: number, status: string) => {
