@@ -9,6 +9,7 @@ export interface Post {
   status: string;
   createdAt: string;
   updatedAt: string;
+  liked: boolean;
   user: {
     nickname: string;
     region: {

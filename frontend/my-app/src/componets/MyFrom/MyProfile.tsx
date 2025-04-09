@@ -4,6 +4,7 @@ import styles from './MyProfile.module.css';
 import { updateMeApi } from '../../api/user';
 import { fetchRegions, Region } from '../../api/region';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const MyProfile = () => {
   type FormData = {
@@ -11,6 +12,7 @@ const MyProfile = () => {
     email: string;
     region: number;
   };
+  const navigate = useNavigate();
   const { user, login } = useAuth();
   const [editMode, setEditMode] = useState(false);
   const [regions, setRegions] = useState<Region[]>([]);
@@ -21,7 +23,6 @@ const MyProfile = () => {
   });
 
   useEffect(() => {
-    if (!editMode) return;
     const loadRegions = async () => {
       try {
         const data = await fetchRegions();
@@ -31,7 +32,17 @@ const MyProfile = () => {
       }
     };
     loadRegions();
-  }, [editMode]);
+  }, []);
+
+  useEffect(() => {
+    if (editMode && user) {
+      setForm({
+        nickname: user.nickname,
+        email: user.email,
+        region: user.region?.id || 0,
+      });
+    }
+  }, [editMode, user]);
 
   if (!user) return null;
 
@@ -45,7 +56,14 @@ const MyProfile = () => {
 
   const handleUpdate = async () => {
     try {
-      const updatedUser = await updateMeApi({ ...form }); // regionId 그대로 전달
+      const { nickname, email, region } = form;
+
+      const updatedUser = await updateMeApi({
+        nickname,
+        email,
+        regionId: region, // ✅ 서버가 기대하는 필드 이름
+      });
+
       login(updatedUser.user);
       setEditMode(false);
     } catch {
@@ -80,7 +98,7 @@ const MyProfile = () => {
           <p>
             <strong>지역:</strong>
             <select
-              name="regionId"
+              name="region"
               value={form.region}
               onChange={handleChange}
               className={styles.input}
@@ -111,6 +129,10 @@ const MyProfile = () => {
           <button onClick={() => setEditMode(true)}>수정</button>
         </>
       )}
+      <div className={styles.buttonSection}>
+        <button onClick={() => navigate('/myposts')}>내가 쓴 게시글</button>
+        <button onClick={() => navigate('/mylikes')}>찜한 게시글</button>
+      </div>
     </section>
   );
 };

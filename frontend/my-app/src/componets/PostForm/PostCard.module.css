@@ -40,3 +40,14 @@
   padding: 20px 40px; /* 위아래 20px, 양옆 40px 여백 */
   box-sizing: border-box;
 }
+.likeBtn {
+  position: absolute;
+  background: none;
+  border: none;
+  color: #ff5f5f;
+  cursor: pointer;
+}
+
+.likeBtn:hover {
+  transform: scale(1.2);
+}
