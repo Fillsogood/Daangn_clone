@@ -30,28 +30,28 @@ export const getPosts = async (query: GetPostsQuery) => {
   const posts = await prisma.post.findMany({
     skip,
     take: limit,
-    orderBy: {
-      createdAt: 'desc',
-    },
+    orderBy: { createdAt: 'desc' },
     include: {
       user: {
         select: {
           nickname: true,
-          region: {
-            select: {
-              name: true,
-            },
-          },
+          region: { select: { name: true } },
         },
       },
       images: {
         take: 1,
         select: { url: true },
       },
+      likes: {
+        select: { id: true },
+      },
     },
   });
 
-  return posts;
+  return posts.map((post) => ({
+    ...post,
+    liked: post.likes.length > 0,
+  }));
 };
 
 export const getPostById = async (id: number) => {
@@ -181,7 +181,12 @@ export const updatePostStatus = async (postId: number, userId: number, status: s
   });
 };
 
-export const searchPosts = async (keyword: string, sort: string = 'recent', regionId?: number) => {
+export const searchPosts = async (
+  keyword: string,
+  sort: string = 'recent',
+  regionId?: number,
+  userId?: number // 로그인 유저 ID 전달
+) => {
   type SortOrder = 'asc' | 'desc';
   let orderBy: { price?: SortOrder; createdAt?: SortOrder };
 
@@ -198,7 +203,7 @@ export const searchPosts = async (keyword: string, sort: string = 'recent', regi
       break;
   }
 
-  // 🔍 지역에 속한 유저 ID 목록 조회
+  // 지역에 속한 유저 ID 목록 조회
   let userIds: number[] | undefined;
 
   if (regionId) {
@@ -206,10 +211,10 @@ export const searchPosts = async (keyword: string, sort: string = 'recent', regi
       where: { regionId },
       select: { id: true },
     });
-    userIds = users.map((u: { id: number }) => u.id);
+    userIds = users.map((u) => u.id);
   }
 
-  return await prisma.post.findMany({
+  const posts = await prisma.post.findMany({
     where: {
       AND: [
         ...(regionId && userIds?.length ? [{ userId: { in: userIds } }] : []),
@@ -219,12 +224,7 @@ export const searchPosts = async (keyword: string, sort: string = 'recent', regi
       ],
     },
     orderBy,
-    select: {
-      id: true,
-      title: true,
-      price: true,
-      status: true,
-      createdAt: true,
+    include: {
       images: {
         take: 1,
         select: { url: true },
@@ -232,13 +232,20 @@ export const searchPosts = async (keyword: string, sort: string = 'recent', regi
       user: {
         select: {
           nickname: true,
-          region: {
-            select: {
-              name: true,
-            },
-          },
+          region: { select: { name: true } },
+        },
+      },
+      likes: {
+        select: {
+          id: true,
+          userId: true,
         },
       },
     },
   });
+
+  return posts.map((post) => ({
+    ...post,
+    liked: userId ? post.likes.some((like) => like.userId === Number(userId)) : false,
+  }));
 };

@@ -16,5 +16,5 @@ export const uploadToS3 = async (file: File): Promise<string> => {
   }
 
   // 업로드된 파일의 실제 접근 URL을 리턴
-  return `https://daangn-clone-images.s3.ap-northeast-2.amazonaws.com/images/${fileName}`;
+  return uploadUrl;
 };

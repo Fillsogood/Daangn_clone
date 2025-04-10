@@ -45,15 +45,10 @@ export const updateUser = async (userId: number, updates: UpdateUserInput) => {
 
 //내가 쓴 게시물 조회
 export const getMyPosts = async (userId: number) => {
-  return await prisma.post.findMany({
+  const posts = await prisma.post.findMany({
     where: { userId },
     orderBy: { createdAt: 'desc' },
-    select: {
-      id: true,
-      title: true,
-      price: true,
-      status: true,
-      createdAt: true,
+    include: {
       images: {
         take: 1,
         select: { url: true },
@@ -61,12 +56,19 @@ export const getMyPosts = async (userId: number) => {
       user: {
         select: {
           region: {
-            select: {
-              name: true,
-            },
+            select: { name: true },
           },
         },
       },
+      likes: {
+        where: { userId }, // 로그인한 유저 기준 찜 여부 확인
+        select: { id: true, userId: true },
+      },
     },
   });
+
+  return posts.map((post) => ({
+    ...post,
+    liked: post.likes.some((like) => like.userId === userId),
+  }));
 };

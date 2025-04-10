@@ -3,6 +3,7 @@ import { CreatePostInput, UpdatePostInput } from '../types/post.types';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import * as postService from '../services/post.service';
 import { getUserById } from '../services/user.service';
+import { deleteFromS3 } from '../utils/s3';
 
 // 게시물 작성
 export const createPost = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -138,7 +139,7 @@ export const searchPosts = async (req: AuthRequest, res: Response): Promise<void
   try {
     const keyword = req.query.keyword as string;
     const sort = (req.query.sort as string) || 'recent';
-
+    const userId = req.userId || Number(req.query.userId);
     if (!keyword || keyword.trim() === '') {
       res.status(400).json({ error: '검색어를 입력해주세요.' });
       return;
@@ -152,11 +153,22 @@ export const searchPosts = async (req: AuthRequest, res: Response): Promise<void
       regionId = user?.region?.id;
     }
 
-    const posts = await postService.searchPosts(keyword, sort, regionId);
+    const posts = await postService.searchPosts(keyword, sort, regionId, userId);
 
     res.status(200).json({ posts });
   } catch (err) {
     const message = err instanceof Error ? err.message : '서버 오류';
     res.status(500).json({ error: '검색 중 오류 발생', message });
+  }
+};
+
+//s3 이미지 삭제
+export const deleteImage = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { key } = req.body;
+    await deleteFromS3(key);
+    res.status(200).json({ message: '이미지 삭제 완료' });
+  } catch {
+    res.status(500).json({ error: '이미지 삭제 실패' });
   }
 };

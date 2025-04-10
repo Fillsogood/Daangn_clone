@@ -54,3 +54,30 @@
   font-size: 14px;
   text-align: center;
 }
+
+.imagePreview {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.previewWrapper {
+  position: relative;
+}
+.previewImg {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.previewWrapper button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #ff5f5f;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 0 4px 0 4px;
+}
