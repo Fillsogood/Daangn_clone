@@ -8,6 +8,7 @@ import PostCreatePage from '../pages/PostCreatePage';
 import MyPage from '../pages/MyProfile';
 import MyPosts from '../componets/MyFrom/MyPosts';
 import MyLikes from '../componets/MyFrom/MyLikes';
+import PostEditPage from '../pages/PostEditPage';
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
       { path: 'signup', element: <Signup /> },
       { path: 'auth/kakao/callback', element: <KakaoCallback /> }, //콜백 경로 추가
       { path: 'posts/create', element: <PostCreatePage /> },
+      { path: 'posts/edit/:id', element: <PostEditPage /> },
       { path: 'mypage', element: <MyPage /> },
       { path: 'myposts', element: <MyPosts /> },
       { path: 'mylikes', element: <MyLikes /> },

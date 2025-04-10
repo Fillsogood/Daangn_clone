@@ -332,3 +332,32 @@
  *       400:
  *         description: 잘못된 요청
  */
+
+/**
+ * @swagger
+ * /api/posts/s3/image/delete:
+ *   post:
+ *     summary: S3 이미지 삭제
+ *     tags: [Image]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - key
+ *             properties:
+ *               key:
+ *                 type: string
+ *                 example: images/1743582364245_스투시 비니.jpeg
+ *     responses:
+ *       200:
+ *         description: 이미지 삭제 성공
+ *       400:
+ *         description: 잘못된 요청
+ *       500:
+ *         description: 이미지 삭제 실패
+ */
