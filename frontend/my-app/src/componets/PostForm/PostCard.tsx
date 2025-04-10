@@ -11,14 +11,21 @@ interface Props {
   post: Post;
   onUnlike?: (_postId: number) => void; // optional
   isMyPost?: boolean;
+  isClickable?: boolean;
 }
 
-const PostCard = ({ post, onUnlike, isMyPost = false }: Props) => {
+const PostCard = ({ post, onUnlike, isMyPost = false, isClickable = true }: Props) => {
   const imageUrl = post.images[0]?.url || image; // 기본 이미지
   const regionPart = post.user?.region?.name?.split(' ')[2] || '미지정';
   const [liked, setLiked] = useState(post.liked); // 찜 여부 상태
   const { user } = useAuth(); // 로그인 상태
   const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    if (isClickable) {
+      navigate(`/posts/${post.id}`);
+    }
+  };
 
   useEffect(() => {
     setLiked(post.liked);
@@ -61,7 +68,11 @@ const PostCard = ({ post, onUnlike, isMyPost = false }: Props) => {
     }
   };
   return (
-    <div className={styles.card}>
+    <div
+      className={styles.card}
+      onClick={handleCardClick}
+      style={{ cursor: isClickable ? 'pointer' : 'default' }}
+    >
       <img src={imageUrl} alt={post.title} className={styles.image} />
       <div className={styles.info}>
         <p className={styles.title}>{post.title}</p>

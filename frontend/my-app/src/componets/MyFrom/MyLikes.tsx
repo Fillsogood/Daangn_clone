@@ -27,7 +27,7 @@ const MyLikes = () => {
       ) : (
         <div className={styles.grid}>
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} onUnlike={handleUnlike} />
+            <PostCard key={post.id} post={post} onUnlike={handleUnlike} isClickable={false} />
           ))}
         </div>
       )}

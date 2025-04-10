@@ -34,7 +34,7 @@ export const updateUser = async (userId: number, updates: UpdateUserInput) => {
       region: {
         select: {
           id: true,
-          name: true, // ✅ 프론트에서 필요한 name 포함
+          name: true, // 프론트에서 필요한 name 포함
         },
       },
       createdAt: true,
@@ -50,7 +50,6 @@ export const getMyPosts = async (userId: number) => {
     orderBy: { createdAt: 'desc' },
     include: {
       images: {
-        take: 1,
         select: { url: true },
       },
       user: {

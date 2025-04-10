@@ -23,7 +23,7 @@ const MyPosts = () => {
       ) : (
         <div className={styles.grid}>
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} isMyPost />
+            <PostCard key={post.id} post={post} isMyPost isClickable={false} />
           ))}
         </div>
       )}
