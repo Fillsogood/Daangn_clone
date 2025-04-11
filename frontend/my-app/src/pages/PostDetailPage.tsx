@@ -1,4 +1,3 @@
-// PostDetailPage.tsx
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getPostById } from '../api/post';
@@ -6,11 +5,28 @@ import { Post } from '../api/post';
 import styles from '../componets/PostForm/PostDetail.module.css';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { useAuth } from '../hooks/useAuth';
+import { createChatRoom } from '../api/chat';
+import { useChat } from '../hooks/useChat';
 
 const PostDetailPage = () => {
   const { id } = useParams();
   const [post, setPost] = useState<Post | null>(null);
   const [error, setError] = useState('');
+  const { user } = useAuth();
+
+  const { openChatUI, enterRoom } = useChat(); // 채팅 컨트롤
+
+  const handleChatStart = async () => {
+    if (!user || !post) return;
+    try {
+      const room = await createChatRoom(post.id);
+      enterRoom(room.id); // 채팅방 선택
+      openChatUI(); // 모달 열기
+    } catch {
+      alert('채팅방 생성 실패');
+    }
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -58,6 +74,12 @@ const PostDetailPage = () => {
         <h3>상세 설명</h3>
         <p>{post.content}</p>
       </div>
+
+      {user?.id !== post.user?.id && (
+        <button className={styles.chatButton} onClick={handleChatStart}>
+          💬 채팅하기
+        </button>
+      )}
     </div>
   );
 };

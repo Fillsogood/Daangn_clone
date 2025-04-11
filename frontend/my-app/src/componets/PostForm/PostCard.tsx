@@ -29,7 +29,7 @@ const PostCard = ({ post, onUnlike, isMyPost = false, isClickable = true }: Prop
 
   useEffect(() => {
     setLiked(post.liked);
-  }, [user, post.liked]);
+  }, [user?.id, post.liked]);
 
   const handleLike = async () => {
     if (!user) {

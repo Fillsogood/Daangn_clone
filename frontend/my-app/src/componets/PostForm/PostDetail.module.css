@@ -63,3 +63,19 @@ h2 {
   line-height: 1.6;
   color: #444;
 }
+
+.chatButton {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #ff7e36;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.chatButton:hover {
+  background-color: #e76a2f;
+}

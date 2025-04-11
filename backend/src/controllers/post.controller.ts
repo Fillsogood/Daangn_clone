@@ -23,13 +23,17 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
 };
 
 // 게시글 목록 조회
-export const getPosts = async (req: Request, res: Response): Promise<void> => {
+export const getPosts = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { page, limit } = req.query;
-    const posts = await postService.getPosts({
-      page: page ? parseInt(page as string) : undefined,
-      limit: limit ? parseInt(limit as string) : undefined,
-    });
+
+    const posts = await postService.getPosts(
+      {
+        page: page ? parseInt(page as string) : undefined,
+        limit: limit ? parseInt(limit as string) : undefined,
+      },
+      req.userId // 로그인한 경우만 값 존재
+    );
 
     res.status(200).json({ posts });
   } catch (err) {
