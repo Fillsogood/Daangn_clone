@@ -5,7 +5,6 @@ export const registerChatSocket = (io: Server, socket: Socket) => {
   // 채팅방 입장
   socket.on('chat:join', (roomId: string) => {
     socket.join(roomId);
-    console.log(`✅ ${socket.id} joined room ${roomId}`);
   });
 
   // 메시지 전송
@@ -22,22 +21,29 @@ export const registerChatSocket = (io: Server, socket: Socket) => {
       return;
     }
 
-    // 2. 메시지 저장
+    // 2. 메시지 저장 + sender 정보도 함께 조회
     const message = await prisma.chatMessage.create({
       data: { content, senderId, roomId },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            nickname: true,
+          },
+        },
+      },
     });
 
     // 3. 메시지 전송
     io.to(String(roomId)).emit('chat:receive', {
       id: message.id,
       roomId,
-      senderId,
-      content,
+      content: message.content,
       createdAt: message.createdAt,
+      sender: {
+        id: message.sender.id,
+        nickname: message.sender.nickname,
+      },
     });
-  });
-
-  socket.on('disconnect', () => {
-    console.log(`❌ ${socket.id} disconnected`);
   });
 };

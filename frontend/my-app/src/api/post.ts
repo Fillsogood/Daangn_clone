@@ -11,6 +11,7 @@ export interface Post {
   updatedAt: string;
   liked?: boolean;
   user: {
+    id: number;
     nickname: string;
     region: {
       name: string;

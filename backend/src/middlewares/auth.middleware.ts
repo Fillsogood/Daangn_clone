@@ -22,3 +22,17 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
     return;
   }
 };
+
+export const optionalAuthMiddleware = (req: AuthRequest, _res: Response, next: NextFunction) => {
+  const token = req.cookies?.token;
+  if (!token) return next(); // 로그인 안 한 경우도 통과
+
+  try {
+    const decoded = verify<{ userId: number }>(token);
+    req.userId = decoded.userId;
+  } catch {
+    // 토큰이 잘못됐으면 로그인 안 한 걸로 간주
+  }
+
+  next();
+};

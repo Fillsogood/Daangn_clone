@@ -1,0 +1,90 @@
+/* ChatModal.module.css */
+
+.overlay {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2000;
+}
+
+.modal {
+  width: 320px;
+  height: 500px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 3px solid #ffc107; /* 노란 테두리 */
+}
+
+.header {
+  background-color: #ffc107;
+  color: #333;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.header button {
+  background: ffc107;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.messages {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.message {
+  max-width: 75%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.myMsg {
+  align-self: flex-end;
+  background-color: #ffecb3;
+}
+
+.otherMsg {
+  align-self: flex-start;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+}
+
+.inputBox {
+  display: flex;
+  border-top: 1px solid #eee;
+  background: #fff;
+}
+
+.inputBox input {
+  flex: 1;
+  border: none;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.inputBox button {
+  background-color: #ffc107;
+  color: #fff;
+  border: none;
+  padding: 0 16px;
+  font-weight: bold;
+  cursor: pointer;
+}

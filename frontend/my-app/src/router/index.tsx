@@ -10,6 +10,7 @@ import MyPosts from '../componets/MyFrom/MyPosts';
 import MyLikes from '../componets/MyFrom/MyLikes';
 import PostEditPage from '../pages/PostEditPage';
 import PostDetailPage from '../pages/PostDetailPage';
+import ChatList from '../componets/ChatForm/ChatList';
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
       { path: 'posts/create', element: <PostCreatePage /> },
       { path: 'posts/edit/:id', element: <PostEditPage /> },
       { path: 'posts/:id', element: <PostDetailPage /> },
+      { path: 'chat', element: <ChatList /> },
       { path: 'mypage', element: <MyPage /> },
       { path: 'myposts', element: <MyPosts /> },
       { path: 'mylikes', element: <MyLikes /> },

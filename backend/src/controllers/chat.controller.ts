@@ -66,3 +66,23 @@ export const getMyChatRooms = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: '채팅방 목록 조회 실패' });
   }
 };
+
+export const deleteChatRoom = async (req: AuthRequest, res: Response) => {
+  try {
+    const roomId = parseInt(req.params.id);
+    const userId = req.userId;
+
+    if (!userId || isNaN(roomId)) {
+      res.status(400).json({ error: '유효하지 않은 요청입니다.' });
+      return;
+    }
+
+    await chatService.deleteChatRoom(roomId);
+
+    res.status(200).json({ message: '채팅방이 삭제되었습니다.' });
+    return;
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err instanceof Error ? err.message : '채팅방 삭제 실패' });
+  }
+};

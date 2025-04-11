@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  relationMode = "foreignKeys"
 }
 
 model User {
@@ -82,7 +83,8 @@ model ChatRoom {
   buyer     User     @relation("buyer", fields: [buyerId], references: [id])
   seller    User     @relation("seller", fields: [sellerId], references: [id])
   post      Post     @relation(fields: [postId], references: [id])
-  messages  ChatMessage[]
+  isDeleted Boolean   @default(false)
+  messages ChatMessage[]
   createdAt DateTime @default(now())
 }
 
@@ -92,6 +94,6 @@ model ChatMessage {
   senderId  Int
   roomId    Int
   sender    User     @relation(fields: [senderId], references: [id])
-  room      ChatRoom @relation(fields: [roomId], references: [id])
+  room      ChatRoom  @relation(fields: [roomId], references: [id])
   createdAt DateTime @default(now())
 }

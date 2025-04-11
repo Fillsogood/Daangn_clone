@@ -22,7 +22,7 @@ export const createPost = async (userId: number, input: CreatePostInput) => {
   return post;
 };
 
-export const getPosts = async (query: GetPostsQuery) => {
+export const getPosts = async (query: GetPostsQuery, userId?: number) => {
   const page = query.page || 1;
   const limit = query.limit || 10;
   const skip = (page - 1) * limit;
@@ -34,6 +34,7 @@ export const getPosts = async (query: GetPostsQuery) => {
     include: {
       user: {
         select: {
+          id: true,
           nickname: true,
           region: { select: { name: true } },
         },
@@ -43,14 +44,14 @@ export const getPosts = async (query: GetPostsQuery) => {
         select: { url: true },
       },
       likes: {
-        select: { id: true },
+        select: { id: true, userId: true },
       },
     },
   });
 
   return posts.map((post) => ({
     ...post,
-    liked: post.likes.length > 0,
+    liked: userId ? post.likes.some((like) => like.userId === userId) : false
   }));
 };
 
@@ -59,7 +60,10 @@ export const getPostById = async (id: number) => {
     where: { id },
     include: {
       user: {
-        select: { nickname: true },
+        select: { 
+          id: true,
+          nickname: true 
+        },
       },
       images: {
         select: { url: true },
@@ -231,6 +235,7 @@ export const searchPosts = async (
       },
       user: {
         select: {
+          id: true,
           nickname: true,
           region: { select: { name: true } },
         },
