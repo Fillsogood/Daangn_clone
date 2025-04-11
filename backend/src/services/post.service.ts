@@ -1,6 +1,7 @@
 import prisma from '../config/prisma';
 import { CreatePostInput, GetPostsQuery, UpdatePostInput } from '../types/post.types';
 
+// 게시글 생성
 export const createPost = async (userId: number, input: CreatePostInput) => {
   const { title, content, price, images } = input;
 
@@ -22,7 +23,8 @@ export const createPost = async (userId: number, input: CreatePostInput) => {
   return post;
 };
 
-export const getPosts = async (query: GetPostsQuery) => {
+// 전체 게시글 조회
+export const getPosts = async (query: GetPostsQuery, userId?: number | null) => {
   const page = query.page || 1;
   const limit = query.limit || 10;
   const skip = (page - 1) * limit;
@@ -30,29 +32,41 @@ export const getPosts = async (query: GetPostsQuery) => {
   const posts = await prisma.post.findMany({
     skip,
     take: limit,
-    orderBy: {
-      createdAt: 'desc',
-    },
+    orderBy: { createdAt: 'desc' },
     include: {
       user: {
-        select: { nickname: true },
+        select: {
+          id: true,
+          nickname: true,
+          region: { select: { name: true } },
+        },
       },
       images: {
-        take: 1, // 대표 이미지 1장만
+        take: 1,
         select: { url: true },
+      },
+      likes: {
+        select: { id: true, userId: true },
       },
     },
   });
 
-  return posts;
+  return posts.map((post) => ({
+    ...post,
+    liked: userId ? post.likes.some((like) => like.userId === userId) : false,
+  }));
 };
 
+//특정 게시글 조회
 export const getPostById = async (id: number) => {
   return await prisma.post.findUnique({
     where: { id },
     include: {
       user: {
-        select: { nickname: true },
+        select: {
+          id: true,
+          nickname: true,
+        },
       },
       images: {
         select: { url: true },
@@ -61,6 +75,7 @@ export const getPostById = async (id: number) => {
   });
 };
 
+//게시글 수정
 export const updatePost = async (postId: number, userId: number, data: UpdatePostInput) => {
   // 게시글 존재 여부 + 소유자 확인
   const post = await prisma.post.findUnique({
@@ -99,6 +114,7 @@ export const updatePost = async (postId: number, userId: number, data: UpdatePos
   return updatedPost;
 };
 
+//게시글 소프트 삭제
 export const deletePost = async (postId: number, userId: number) => {
   const post = await prisma.post.findUnique({
     where: { id: postId },
@@ -117,25 +133,42 @@ export const deletePost = async (postId: number, userId: number) => {
   return true;
 };
 
-export const getPostsByRegion = async (regionId: number, page = 1, limit = 10) => {
+//위치 기반 전체 게시글 조회
+export const getPostsByRegion = async (regionId: number, page = 1, limit = 10, userId: number) => {
   const skip = (page - 1) * limit;
 
-  return await prisma.post.findMany({
+  const posts = await prisma.post.findMany({
     skip,
     take: limit,
     orderBy: { createdAt: 'desc' },
     where: {
-      user: {
-        regionId,
-      },
+      user: { regionId },
     },
     include: {
-      user: { select: { nickname: true } },
-      images: { take: 1, select: { url: true } },
+      user: {
+        select: {
+          nickname: true,
+          region: { select: { name: true } },
+        },
+      },
+      images: {
+        take: 1,
+        select: { url: true },
+      },
+      likes: {
+        where: { userId }, // 현재 유저가 찜한 게시글
+        select: { id: true },
+      },
     },
   });
+
+  return posts.map((post) => ({
+    ...post,
+    liked: post.likes.length > 0,
+  }));
 };
 
+// 상태 수정
 export const updatePostStatus = async (postId: number, userId: number, status: string) => {
   const validStatus = ['selling', 'reserved', 'sold'];
 
@@ -159,7 +192,13 @@ export const updatePostStatus = async (postId: number, userId: number, status: s
   });
 };
 
-export const searchPosts = async (keyword: string, sort: string = 'recent', regionId?: number) => {
+//검색 기능
+export const searchPosts = async (
+  keyword: string,
+  sort: string = 'recent',
+  regionId?: number,
+  userId?: number // 로그인 유저 ID 전달
+) => {
   type SortOrder = 'asc' | 'desc';
   let orderBy: { price?: SortOrder; createdAt?: SortOrder };
 
@@ -176,7 +215,7 @@ export const searchPosts = async (keyword: string, sort: string = 'recent', regi
       break;
   }
 
-  // 🔍 지역에 속한 유저 ID 목록 조회
+  // 지역에 속한 유저 ID 목록 조회
   let userIds: number[] | undefined;
 
   if (regionId) {
@@ -184,10 +223,10 @@ export const searchPosts = async (keyword: string, sort: string = 'recent', regi
       where: { regionId },
       select: { id: true },
     });
-    userIds = users.map((u: { id: number }) => u.id);
+    userIds = users.map((u) => u.id);
   }
 
-  return await prisma.post.findMany({
+  const posts = await prisma.post.findMany({
     where: {
       AND: [
         ...(regionId && userIds?.length ? [{ userId: { in: userIds } }] : []),
@@ -197,16 +236,29 @@ export const searchPosts = async (keyword: string, sort: string = 'recent', regi
       ],
     },
     orderBy,
-    select: {
-      id: true,
-      title: true,
-      price: true,
-      status: true,
-      createdAt: true,
+    include: {
       images: {
         take: 1,
         select: { url: true },
       },
+      user: {
+        select: {
+          id: true,
+          nickname: true,
+          region: { select: { name: true } },
+        },
+      },
+      likes: {
+        select: {
+          id: true,
+          userId: true,
+        },
+      },
     },
   });
+
+  return posts.map((post) => ({
+    ...post,
+    liked: userId ? post.likes.some((like) => like.userId === Number(userId)) : false,
+  }));
 };

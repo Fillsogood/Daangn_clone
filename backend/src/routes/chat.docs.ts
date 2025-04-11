@@ -99,3 +99,31 @@
  *       500:
  *         description: 서버 오류
  */
+
+/**
+ * @swagger
+ * /api/chatrooms/{id}:
+ *   delete:
+ *     summary: 채팅방 삭제 (나가기)
+ *     tags: [Chat]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: 삭제할 채팅방 ID
+ *     responses:
+ *       200:
+ *         description: 채팅방 삭제 성공
+ *       400:
+ *         description: 유효하지 않은 요청
+ *       403:
+ *         description: 채팅방 삭제 권한 없음
+ *       404:
+ *         description: 채팅방을 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
+ */

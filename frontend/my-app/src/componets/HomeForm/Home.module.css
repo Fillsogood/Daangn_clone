@@ -1,0 +1,76 @@
+/* header css */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+  cursor: pointer;
+}
+
+.menu {
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #e97341;
+}
+
+.right {
+  display: flex;
+  gap: 12px;
+}
+
+.right button {
+  background: transparent;
+  border: 1px solid #e97341;
+  color: #e97341;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  outline: none; /* 기본 포커스 테두리 제거 */
+}
+
+.right button:hover {
+  background-color: #e97341;
+  color: white;
+}
+
+.nickname {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  line-height: 1; /* 세로 정렬 보정 */
+}
+
+/* session css */
+
+/* footer css */
+.footer {
+  padding: 60px 0;
+  text-align: center;
+  font-size: 14px;
+  border-top: 1px solid #ddd;
+}
+.p {
+  text-align: left;
+}
+.p p {
+  margin: 0;
+  color: rgb(134, 139, 148);
+}
+.p span {
+  font-weight: 700;
+  color: rgb(125, 132, 147);
+}

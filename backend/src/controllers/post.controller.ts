@@ -3,6 +3,7 @@ import { CreatePostInput, UpdatePostInput } from '../types/post.types';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import * as postService from '../services/post.service';
 import { getUserById } from '../services/user.service';
+import { deleteFromS3 } from '../utils/s3';
 
 // 게시물 작성
 export const createPost = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -22,16 +23,21 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
 };
 
 // 게시글 목록 조회
-export const getPosts = async (req: Request, res: Response): Promise<void> => {
+export const getPosts = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { page, limit } = req.query;
-    const posts = await postService.getPosts({
-      page: page ? parseInt(page as string) : undefined,
-      limit: limit ? parseInt(limit as string) : undefined,
-    });
+
+    const posts = await postService.getPosts(
+      {
+        page: page ? parseInt(page as string, 10) : 1,
+        limit: limit ? parseInt(limit as string, 10) : 10,
+      },
+      req.userId || null // 명시적으로 null 전달
+    );
 
     res.status(200).json({ posts });
   } catch (err) {
+    console.error('❌ 게시글 조회 실패:', err);
     res.status(500).json({ error: '게시글 목록 조회 실패', message: err });
   }
 };
@@ -86,6 +92,7 @@ export const deletePost = async (req: AuthRequest, res: Response): Promise<void>
     await postService.deletePost(postId, req.userId);
     res.status(200).json({ message: '게시글이 삭제되었습니다.' });
   } catch (err) {
+    console.log(err);
     res.status(403).json({ error: err instanceof Error ? err.message : '삭제 실패' });
   }
 };
@@ -108,7 +115,7 @@ export const getPostsByUserRegion = async (req: AuthRequest, res: Response): Pro
       return;
     }
 
-    const posts = await postService.getPostsByRegion(user.region.id, page, limit);
+    const posts = await postService.getPostsByRegion(user.region.id, page, limit, req.userId);
     res.status(200).json({ posts });
   } catch {
     res.status(500).json({ error: '지역 기반 게시글 조회 실패' });
@@ -138,7 +145,7 @@ export const searchPosts = async (req: AuthRequest, res: Response): Promise<void
   try {
     const keyword = req.query.keyword as string;
     const sort = (req.query.sort as string) || 'recent';
-
+    const userId = req.userId || Number(req.query.userId);
     if (!keyword || keyword.trim() === '') {
       res.status(400).json({ error: '검색어를 입력해주세요.' });
       return;
@@ -152,11 +159,22 @@ export const searchPosts = async (req: AuthRequest, res: Response): Promise<void
       regionId = user?.region?.id;
     }
 
-    const posts = await postService.searchPosts(keyword, sort, regionId);
+    const posts = await postService.searchPosts(keyword, sort, regionId, userId);
 
     res.status(200).json({ posts });
   } catch (err) {
     const message = err instanceof Error ? err.message : '서버 오류';
     res.status(500).json({ error: '검색 중 오류 발생', message });
+  }
+};
+
+//s3 이미지 삭제
+export const deleteImage = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { key } = req.body;
+    await deleteFromS3(key);
+    res.status(200).json({ message: '이미지 삭제 완료' });
+  } catch {
+    res.status(500).json({ error: '이미지 삭제 실패' });
   }
 };

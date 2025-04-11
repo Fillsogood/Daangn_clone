@@ -13,16 +13,27 @@ export const removeLike = async (userId: number, postId: number) => {
   });
 };
 
-export const getMyLikedPosts = async (userId: number) => {
-  return await prisma.like.findMany({
+export const getLikedPostsByUser = async (userId: number) => {
+  const likes = await prisma.like.findMany({
     where: { userId },
-    include: {
+    select: {
       post: {
         include: {
-          user: { select: { nickname: true } },
           images: { take: 1, select: { url: true } },
+          user: {
+            select: {
+              nickname: true,
+              region: { select: { name: true } },
+            },
+          },
         },
       },
     },
   });
+
+  // `post`에 liked: true 추가
+  return likes.map((like) => ({
+    ...like.post,
+    liked: true,
+  }));
 };

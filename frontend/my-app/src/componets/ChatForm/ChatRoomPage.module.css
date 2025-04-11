@@ -1,0 +1,68 @@
+/* ChatRoomPage.module.css */
+
+/* 채팅 메시지 영역 */
+.messages {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #fffbe7; /* 연노랑 배경 */
+}
+
+/* 채팅 말풍선 공통 */
+.message {
+  max-width: 75%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* 내가 보낸 메시지 */
+.myMsg {
+  align-self: flex-end;
+  background-color: #fff176; /* 밝은 노랑 */
+}
+
+/* 상대방 메시지 */
+.otherMsg {
+  align-self: flex-start;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+}
+
+/* 닉네임 표시 */
+.nickname {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #555;
+}
+
+/* 입력창 영역 */
+.inputBox {
+  display: flex;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+}
+
+.inputBox input {
+  flex: 1;
+  padding: 12px;
+  font-size: 14px;
+  border: none;
+  outline: none;
+}
+
+.inputBox button {
+  background-color: #ffc107;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 0 16px;
+  cursor: pointer;
+}

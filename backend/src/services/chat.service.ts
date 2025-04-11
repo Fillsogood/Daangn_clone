@@ -10,12 +10,17 @@ export const createChatRoom = async (buyerId: number, postId: number) => {
   if (!post) throw new Error('게시글이 존재하지 않습니다.');
   const sellerId = post.userId;
 
+  if (sellerId === buyerId) {
+    throw new Error('자신의 게시글에는 채팅할 수 없습니다.');
+  }
+
   // 2. 이미 있는 채팅방인지 확인
   const existingRoom = await prisma.chatRoom.findFirst({
     where: {
       buyerId,
       sellerId,
       postId,
+      isDeleted: false, // soft delete 무시
     },
   });
 
@@ -56,13 +61,21 @@ export const sendMessage = async (roomId: number, senderId: number, content: str
 
   return await prisma.chatMessage.create({
     data: { roomId, senderId, content },
+    include: {
+      sender: {
+        select: {
+          id: true,
+          nickname: true,
+        },
+      },
+    },
   });
 };
 
-// services/chat.service.ts
 export const getMyChatRooms = async (userId: number) => {
   return await prisma.chatRoom.findMany({
     where: {
+      isDeleted: false,
       OR: [{ buyerId: userId }, { sellerId: userId }],
     },
     orderBy: { createdAt: 'desc' },
@@ -95,5 +108,12 @@ export const getMyChatRooms = async (userId: number) => {
         },
       },
     },
+  });
+};
+
+export const deleteChatRoom = async (roomId: number) => {
+  return await prisma.chatRoom.update({
+    where: { id: roomId },
+    data: { isDeleted: true },
   });
 };
