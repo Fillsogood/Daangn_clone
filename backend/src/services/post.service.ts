@@ -1,6 +1,7 @@
 import prisma from '../config/prisma';
 import { CreatePostInput, GetPostsQuery, UpdatePostInput } from '../types/post.types';
 
+// 게시글 생성
 export const createPost = async (userId: number, input: CreatePostInput) => {
   const { title, content, price, images } = input;
 
@@ -22,7 +23,8 @@ export const createPost = async (userId: number, input: CreatePostInput) => {
   return post;
 };
 
-export const getPosts = async (query: GetPostsQuery, userId?: number) => {
+// 전체 게시글 조회
+export const getPosts = async (query: GetPostsQuery, userId?: number | null) => {
   const page = query.page || 1;
   const limit = query.limit || 10;
   const skip = (page - 1) * limit;
@@ -51,18 +53,19 @@ export const getPosts = async (query: GetPostsQuery, userId?: number) => {
 
   return posts.map((post) => ({
     ...post,
-    liked: userId ? post.likes.some((like) => like.userId === userId) : false
+    liked: userId ? post.likes.some((like) => like.userId === userId) : false,
   }));
 };
 
+//특정 게시글 조회
 export const getPostById = async (id: number) => {
   return await prisma.post.findUnique({
     where: { id },
     include: {
       user: {
-        select: { 
+        select: {
           id: true,
-          nickname: true 
+          nickname: true,
         },
       },
       images: {
@@ -72,6 +75,7 @@ export const getPostById = async (id: number) => {
   });
 };
 
+//게시글 수정
 export const updatePost = async (postId: number, userId: number, data: UpdatePostInput) => {
   // 게시글 존재 여부 + 소유자 확인
   const post = await prisma.post.findUnique({
@@ -110,6 +114,7 @@ export const updatePost = async (postId: number, userId: number, data: UpdatePos
   return updatedPost;
 };
 
+//게시글 소프트 삭제
 export const deletePost = async (postId: number, userId: number) => {
   const post = await prisma.post.findUnique({
     where: { id: postId },
@@ -128,6 +133,7 @@ export const deletePost = async (postId: number, userId: number) => {
   return true;
 };
 
+//위치 기반 전체 게시글 조회
 export const getPostsByRegion = async (regionId: number, page = 1, limit = 10, userId: number) => {
   const skip = (page - 1) * limit;
 
@@ -162,6 +168,7 @@ export const getPostsByRegion = async (regionId: number, page = 1, limit = 10, u
   }));
 };
 
+// 상태 수정
 export const updatePostStatus = async (postId: number, userId: number, status: string) => {
   const validStatus = ['selling', 'reserved', 'sold'];
 
@@ -185,6 +192,7 @@ export const updatePostStatus = async (postId: number, userId: number, status: s
   });
 };
 
+//검색 기능
 export const searchPosts = async (
   keyword: string,
   sort: string = 'recent',

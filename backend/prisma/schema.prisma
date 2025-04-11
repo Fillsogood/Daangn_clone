@@ -3,65 +3,65 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "foreignKeys"
 }
 
 model User {
-  id           Int              @id @default(autoincrement())
-  email        String?          @unique // 소셜 로그인만 하는 유저는 null일 수 있음
-  password     String?          // 일반 로그인만 해당
-  nickname     String
-  regionId     Int
-  refreshToken String?
-  region       Region           @relation(fields: [regionId], references: [id])
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  socialAccounts  SocialAccount[]  // 연결된 소셜 계정들
-  posts        Post[]
-  likes        Like[]
-  messages     ChatMessage[]
-  chatRoomsAsBuyer  ChatRoom[]  @relation("buyer")
-  chatRoomsAsSeller ChatRoom[]  @relation("seller")
+  id                Int             @id @default(autoincrement())
+  email             String?         @unique // 소셜 로그인만 하는 유저는 null일 수 있음
+  password          String? // 일반 로그인만 해당
+  nickname          String
+  regionId          Int
+  refreshToken      String?
+  region            Region          @relation(fields: [regionId], references: [id])
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  socialAccounts    SocialAccount[] // 연결된 소셜 계정들
+  posts             Post[]
+  likes             Like[]
+  messages          ChatMessage[]
+  chatRoomsAsBuyer  ChatRoom[]      @relation("buyer")
+  chatRoomsAsSeller ChatRoom[]      @relation("seller")
 }
 
 model SocialAccount {
-  id        Int    @id @default(autoincrement())
-  provider  String // 'kakao', 'google', etc.
-  socialId  String
-  userId    Int
-  user      User   @relation(fields: [userId], references: [id])
+  id       Int    @id @default(autoincrement())
+  provider String // 'kakao', 'google', etc.
+  socialId String
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id])
 
   @@unique([provider, socialId]) // 소셜 유저 중복 방지
 }
 
 model Region {
-  id     Int     @id @default(autoincrement())
-  name   String
-  users  User[]
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
   title     String
   content   String
   price     Int
   images    PostImage[]
-  status    String   @default("selling")
+  status    String      @default("selling")
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User        @relation(fields: [userId], references: [id])
   likes     Like[]
   chatRooms ChatRoom[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }
 
 model PostImage {
-  id      Int    @id @default(autoincrement())
-  url     String
-  postId  Int
-  post    Post   @relation(fields: [postId], references: [id])
+  id     Int    @id @default(autoincrement())
+  url    String
+  postId Int
+  post   Post   @relation(fields: [postId], references: [id])
 }
 
 model Like {
@@ -69,23 +69,23 @@ model Like {
   userId    Int
   postId    Int
   user      User     @relation(fields: [userId], references: [id])
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@unique([userId, postId])
 }
 
 model ChatRoom {
-  id        Int      @id @default(autoincrement())
+  id        Int           @id @default(autoincrement())
   buyerId   Int
   sellerId  Int
   postId    Int
-  buyer     User     @relation("buyer", fields: [buyerId], references: [id])
-  seller    User     @relation("seller", fields: [sellerId], references: [id])
-  post      Post     @relation(fields: [postId], references: [id])
-  isDeleted Boolean   @default(false)
-  messages ChatMessage[]
-  createdAt DateTime @default(now())
+  buyer     User          @relation("buyer", fields: [buyerId], references: [id])
+  seller    User          @relation("seller", fields: [sellerId], references: [id])
+  post      Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  isDeleted Boolean       @default(false)
+  messages  ChatMessage[]
+  createdAt DateTime      @default(now())
 }
 
 model ChatMessage {
@@ -94,6 +94,6 @@ model ChatMessage {
   senderId  Int
   roomId    Int
   sender    User     @relation(fields: [senderId], references: [id])
-  room      ChatRoom  @relation(fields: [roomId], references: [id])
+  room      ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }

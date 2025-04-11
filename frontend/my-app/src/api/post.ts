@@ -1,25 +1,42 @@
 // src/api/post.ts
 import api from './axios';
 
+export interface Region {
+  name: string;
+}
+
+export interface UserSummary {
+  id: number;
+  nickname: string;
+  region: Region;
+}
+
+export interface PostImage {
+  url: string;
+}
+
+export interface Like {
+  id: number;
+  userId: number;
+}
+
 export interface Post {
   id: number;
   title: string;
   content: string;
   price: number;
   status: string;
-  createdAt: string;
+  userId: number;
+  createdAt: string; // ISO 문자열
   updatedAt: string;
-  liked?: boolean;
-  user: {
-    id: number;
-    nickname: string;
-    region: {
-      name: string;
-    };
-  };
-  images: {
-    url: string;
-  }[];
+  user: UserSummary;
+  images: PostImage[];
+  likes: Like[];
+  liked: boolean;
+}
+
+export interface FetchPostsResponse {
+  posts: Post[];
 }
 
 // 지역 기반 게시글 리스트 조회
@@ -28,9 +45,10 @@ export const fetchPostsRegion = async (): Promise<Post[]> => {
   return res.data.posts;
 };
 
-export const fetchPosts = async (userId?: number): Promise<Post[]> => {
-  const res = await api.get<{ posts: Post[] }>('/posts', {
-    params: userId ? { userId } : {}, // userId 있으면 같이 보냄
+export const fetchPosts = async (userId?: number, page = 1, limit = 10): Promise<Post[]> => {
+  const res = await api.get<FetchPostsResponse>('/posts', {
+    params: { page, limit },
+    headers: userId ? { 'X-User-Id': userId } : {},
   });
   return res.data.posts;
 };
@@ -51,15 +69,26 @@ export const createPost = async (data: CreatePostInput) => {
 interface SearchParams {
   keyword: string;
   sort?: 'recent' | 'price_asc' | 'price_desc';
+  page?: number;
+  limit?: number;
   regionId?: number;
   userId?: number;
 }
 
-export const searchPosts = async (params: SearchParams): Promise<Post[]> => {
-  const res = await api.get<{ posts: Post[] }>('/posts/search', { params });
+export const searchPosts = async (
+  params: SearchParams & { page?: number; limit?: number }
+): Promise<Post[]> => {
+  const res = await api.get<{ posts: Post[] }>('/posts/search', {
+    params: {
+      keyword: params.keyword,
+      sort: params.sort,
+      page: params.page || 1,
+      limit: params.limit || 10,
+      userId: params.userId, // 로그인된 유저라면
+    },
+  });
   return res.data.posts;
 };
-
 // 게시글 삭제
 export const deletePost = async (postId: number) => {
   const res = await api.delete(`/posts/${postId}`);

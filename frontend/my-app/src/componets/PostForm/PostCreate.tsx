@@ -1,4 +1,3 @@
-// src/components/PostForm.tsx
 import { useState } from 'react';
 import styles from './PostCreate.module.css';
 import React from 'react';
@@ -12,6 +11,7 @@ interface PostFormProps {
     content: string;
     price: number;
     images: string[];
+    status?: 'selling' | 'reserved' | 'sold'; // 상태 추가
   };
   postId?: number;
 }
@@ -22,12 +22,15 @@ const PostForm = ({ initialData, postId }: PostFormProps) => {
     content: initialData?.content || '',
     price: initialData?.price || 0,
     images: initialData?.images || [],
+    status: initialData?.status || 'selling',
   });
 
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
@@ -71,14 +74,12 @@ const PostForm = ({ initialData, postId }: PostFormProps) => {
     try {
       await deleteImageFromS3(key!);
       const updatedImages = form.images.filter((img) => img !== url);
-
-      // 🔥 바로 서버에도 반영
       if (postId) {
         await updatePost(postId, { ...form, images: updatedImages });
       }
       setForm((prev) => ({
         ...prev,
-        images: prev.images.filter((img) => img !== url),
+        images: updatedImages,
       }));
     } catch {
       alert('이미지 삭제 실패');
@@ -104,6 +105,13 @@ const PostForm = ({ initialData, postId }: PostFormProps) => {
         onChange={handleChange}
         required
       />
+
+      <select name="status" value={form.status} onChange={handleChange} required>
+        <option value="selling">판매중</option>
+        <option value="reserved">예약중</option>
+        <option value="sold">판매완료</option>
+      </select>
+
       <input type="file" onChange={handleFileChange} />
       {form.images.length > 0 && (
         <div className={styles.imagePreview}>

@@ -82,7 +82,13 @@ const PostCard = ({ post, onUnlike, isMyPost = false, isClickable = true }: Prop
         <span className={styles.status}>{post.status}</span>
 
         <div className={styles.bottomRow}>
-          <button onClick={handleLike} className={styles.likeBtn}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleLike();
+            }}
+            className={styles.likeBtn}
+          >
             {liked ? '♥' : '♡'}
           </button>
 

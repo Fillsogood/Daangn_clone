@@ -29,14 +29,15 @@ export const getPosts = async (req: AuthRequest, res: Response): Promise<void> =
 
     const posts = await postService.getPosts(
       {
-        page: page ? parseInt(page as string) : undefined,
-        limit: limit ? parseInt(limit as string) : undefined,
+        page: page ? parseInt(page as string, 10) : 1,
+        limit: limit ? parseInt(limit as string, 10) : 10,
       },
-      req.userId // 로그인한 경우만 값 존재
+      req.userId || null // 명시적으로 null 전달
     );
 
     res.status(200).json({ posts });
   } catch (err) {
+    console.error('❌ 게시글 조회 실패:', err);
     res.status(500).json({ error: '게시글 목록 조회 실패', message: err });
   }
 };
@@ -91,6 +92,7 @@ export const deletePost = async (req: AuthRequest, res: Response): Promise<void>
     await postService.deletePost(postId, req.userId);
     res.status(200).json({ message: '게시글이 삭제되었습니다.' });
   } catch (err) {
+    console.log(err);
     res.status(403).json({ error: err instanceof Error ? err.message : '삭제 실패' });
   }
 };

@@ -1,5 +1,5 @@
 // src/components/ChatForm/ChatModal.tsx
-import { useChat } from '../../contexts/ChatContext';
+import { useChat } from '../../hooks/useChat';
 import ChatList from './ChatList';
 import ChatRoomPage from '../../pages/ChatRoomPage';
 import styles from './ChatModal.module.css';
